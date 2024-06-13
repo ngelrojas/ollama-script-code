@@ -38,13 +38,13 @@ function activate(context) {
     const provider = new ollamaViewProvider_1.OllamaViewProvider(context);
     context.subscriptions.push(vscode.window.registerWebviewViewProvider("ollama-chat-pilot", provider));
     (0, ollamaRunning_1.checkOllamaRunning)();
-    context.subscriptions.push(vscode.commands.registerCommand("my-local-copilot.openSettings", async () => {
+    context.subscriptions.push(vscode.commands.registerCommand("ollama-script-code.openSettings", async () => {
         const panel = vscode.window.createWebviewPanel("myExtensionSettings", ollamaConstant_1.OLLAMA_SETTING.TITLES.SETTINGS, vscode.ViewColumn.One, { enableScripts: true });
         panel.webview.html = await getWebviewContent(panel.webview, context);
         panel.webview.onDidReceiveMessage((message) => {
             switch (message.command) {
                 case "save":
-                    const config = vscode.workspace.getConfiguration("my-local-copilot");
+                    const config = vscode.workspace.getConfiguration("ollama-script-code");
                     config
                         .update("model", message.value, vscode.ConfigurationTarget.Global)
                         .then(() => {
@@ -52,7 +52,7 @@ function activate(context) {
                     });
                     break;
                 case 'saveParameters':
-                    const configParameters = vscode.workspace.getConfiguration("mylocal-autocoder");
+                    const configParameters = vscode.workspace.getConfiguration("ollama-script-code");
                     configParameters.update('max tokens predicted', message.value.maxTokensPredicted, vscode.ConfigurationTarget.Global);
                     configParameters.update('prompt window size', message.value.promptWindowSize, vscode.ConfigurationTarget.Global);
                     configParameters.update('completion keys', message.value.completionKeys, vscode.ConfigurationTarget.Global);
@@ -69,7 +69,7 @@ function activate(context) {
     const completionProvider = vscode.languages.registerCompletionItemProvider("*", {
         provideCompletionItems: provider_1.provideCompletionItems
     }, ...config_1.completionKeys.split(""));
-    const externalAutocompleteCommand = vscode.commands.registerTextEditorCommand("mylocal-autocoder.autocomplete", (textEditor, _, cancellationToken) => {
+    const externalAutocompleteCommand = vscode.commands.registerTextEditorCommand("ollama-script-code.autocomplete", (textEditor, _, cancellationToken) => {
         (0, command_1.autocompleteCommand)(textEditor, cancellationToken);
     });
     context.subscriptions.push(completionProvider);
@@ -84,7 +84,7 @@ async function retrieveModelList(inputModels) {
             vscode.window.showInformationMessage(ollamaConstant_1.OLLAMA_MSG_INFO.MODEL_NOT_FOUND);
             return "";
         }
-        const config = vscode.workspace.getConfiguration("my-local-copilot");
+        const config = vscode.workspace.getConfiguration("ollama-script-code");
         const modelStored = config.get("model");
         response.models.forEach((model) => {
             let modelName = model.model.split(":")[0];

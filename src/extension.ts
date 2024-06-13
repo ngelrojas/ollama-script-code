@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      "my-local-copilot.openSettings",
+      "ollama-script-code.openSettings",
       async () => {
         const panel = vscode.window.createWebviewPanel(
           "myExtensionSettings",
@@ -47,7 +47,7 @@ export function activate(context: vscode.ExtensionContext) {
             switch (message.command) {
               case "save":
                 const config =
-                  vscode.workspace.getConfiguration("my-local-copilot");
+                  vscode.workspace.getConfiguration("ollama-script-code");
                 config
                   .update(
                     "model",
@@ -62,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
                 break;
               case 'saveParameters':
                   const configParameters =
-                      vscode.workspace.getConfiguration("mylocal-autocoder");
+                      vscode.workspace.getConfiguration("ollama-script-code");
                     configParameters.update('max tokens predicted',message.value.maxTokensPredicted, vscode.ConfigurationTarget.Global);
                     configParameters.update('prompt window size',message.value.promptWindowSize, vscode.ConfigurationTarget.Global);
                     configParameters.update('completion keys',message.value.completionKeys, vscode.ConfigurationTarget.Global);
@@ -89,7 +89,7 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     const externalAutocompleteCommand = vscode.commands.registerTextEditorCommand(
-        "mylocal-autocoder.autocomplete",
+        "ollama-script-code.autocomplete",
         (textEditor, _, cancellationToken?) => {
             autocompleteCommand(textEditor, cancellationToken);
         }
@@ -114,7 +114,7 @@ async function retrieveModelList(inputModels: string) {
             return "";
         }
 
-        const config = vscode.workspace.getConfiguration("my-local-copilot");
+        const config = vscode.workspace.getConfiguration("ollama-script-code");
         const modelStored = config.get("model") as string;
 
         response.models.forEach((model: any) => {

@@ -54,7 +54,7 @@ async function provideCompletionItems(document, position, cancellationToken) {
     // Set the command to trigger the completion
     if (config_1.continueInline || !config_1.responsePreview) {
         item.command = {
-            command: 'mylocal-autocoder.autocomplete',
+            command: 'ollama-script-code.autocomplete',
             title: ollamaConstant_1.OLLAMA_COMMAND.TITLE,
             arguments: [cancellationToken]
         };

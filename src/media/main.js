@@ -66,7 +66,6 @@
           btnCpyMsg.innerHTML = svgCopy;
           btnCpyMsg.setAttribute("data-counter", `${counter}`);
 
-
           document.getElementById(`wrap-ollama-conversation-${counter}`).appendChild(botResponse);
           document.getElementById(`res-ollama-bot-view-${counter}`).appendChild(groupBtnCpyMsg);
           document.getElementById(`group-btn-cpy-msg-${counter}`).appendChild(botAvatar);
@@ -110,6 +109,7 @@
               }
             );
           });
+
           _codeCounterGenerated.map((id) => {
             let matchId = id.match(/code-([^>]+)(?=>)/);
             if (matchId && matchId[1]) {
@@ -120,9 +120,7 @@
               addEventListenerToButton(uuid);
             }
           });
-          break;
-        case "loadChat":
-          document.getElementById("wrap-ollama-section").innerHTML = message.text;
+          getCurrentChat();
           break;
       }
     });
@@ -244,6 +242,7 @@
       document.getElementById(`btn-del-cpy-${counter}`).appendChild(btnDel);
       document.getElementById(`btn-del-cpy-${counter}`).appendChild(btnReSend);
       document.getElementById(`btn-del-cpy-${counter}`).appendChild(btnCpy);
+
       userRequestIn.innerHTML += `<p id="req-current-bot-o-${counter}">${_requestInputValue}</p>`;
       requestInput.value = "";
 
@@ -290,15 +289,44 @@
       });
 
     }
-    // FIRST READ HERE PLEASE
-    // when the chat is close the unload is triggered, and the data should be send using vscode.postMessage
-    // to the file ollamaViewProvider.ts, but not send the data
-    window.addEventListener('unload', () => {
-      const dataSaved = document.getElementById('wrap-ollama-section').innerHTML;
-      vscode.postMessage({ command: "saving", text: dataSaved });
-      console.log("unload chatbot");
-      console.log("counter", counter);
-      console.log("HTML", dataSaved);
+
+    function getCurrentChat() {
+      let chatSaving = document.getElementById('wrap-ollama-section').innerHTML;
+      localStorage.setItem('chat', chatSaving);
+      localStorage.setItem('counter', counter.toString());
+    }
+
+    window.addEventListener('unload', getCurrentChat);
+
+    window.addEventListener('load', (event) => {
+      let chatSaved = localStorage.getItem('chat');
+      counter = parseInt(localStorage.getItem('counter'));
+      if(chatSaved !== ''){
+        document.getElementById('wrap-ollama-section').innerHTML = chatSaved;
+        console.log('counter in load', counter)
+        //TODO: create a function to replace the code below, because it is repeated in the code and that happens because
+        // come from the localStorage
+        const actionBtnCpyMsg = document.getElementById(
+            `btn-cpy-msg-${counter}`
+        );
+
+        actionBtnCpyMsg.addEventListener("click", (event) => {
+          // let counterValue = btnCpyMsg.getAttribute("data-counter");
+          const cpyTextMsg = document.getElementById(
+              `res-current-bot-o-${counter}`
+          ).textContent;
+          navigator.clipboard.writeText(cpyTextMsg).then(
+              function () {
+                vscode.postMessage({ command: "copy", text: cpyTextMsg });
+                console.info("Async: Copying to clipboard was successful!");
+              },
+              function (err) {
+                console.error("Async: Could not copy text: ", err);
+              }
+          );
+        });
+
+      }
     });
 
   });

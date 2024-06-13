@@ -60,7 +60,7 @@ export async function provideCompletionItems(document: vscode.TextDocument, posi
     // Set the command to trigger the completion
     if (continueInline || !responsePreview){
         item.command = {
-            command: 'mylocal-autocoder.autocomplete',
+            command: 'ollama-script-code.autocomplete',
             title: OLLAMA_COMMAND.TITLE,
             arguments: [cancellationToken]
         };
