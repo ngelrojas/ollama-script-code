@@ -45,105 +45,179 @@
       const message = event.data;
       switch (message.command) {
         case "response":
-          document.getElementById(`loading-${counter}`).remove();
-          const botResponse = document.createElement("section");
-          botResponse.id = `res-ollama-bot-view-${counter}`;
-          botResponse.className = "o-section-response border-x border-b pt-1 pb-0.5 px-1.5 mb-1";
-
-          const groupBtnCpyMsg = document.createElement("div");
-          groupBtnCpyMsg.id = `group-btn-cpy-msg-${counter}`;
-          groupBtnCpyMsg.className = "group-btn-cpy-msg flex justify-between mb-1.5";
-
-          const botAvatar = document.createElement("div");
-          botAvatar.id = `bot-avatar-${counter}`;
-          botAvatar.className = "bot-avatar";
-          botAvatar.innerHTML = svgBot;
-
-          const btnCpyMsg = document.createElement("button");
-          btnCpyMsg.id = `btn-cpy-msg-${counter}`;
-          btnCpyMsg.className = "btn-cpy-msg text-gray-500 opacity-50 hover:opacity-100 hover:text-slate-400 m-0.5";
-          btnCpyMsg.title = "copy";
-          btnCpyMsg.innerHTML = svgCopy;
-          btnCpyMsg.setAttribute("data-counter", `${counter}`);
-
-          document.getElementById(`wrap-ollama-conversation-${counter}`).appendChild(botResponse);
-          document.getElementById(`res-ollama-bot-view-${counter}`).appendChild(groupBtnCpyMsg);
-          document.getElementById(`group-btn-cpy-msg-${counter}`).appendChild(botAvatar);
-          document.getElementById(`group-btn-cpy-msg-${counter}`).appendChild(btnCpyMsg);
-
-          let _codeCounterGenerated = [];
-          let formattedMessage = message.text.replace(
-              /(<pre id='code-[^>]+)>/g,
-            function (match, p1) {
-              let _p1 = p1 + ">";
-              _codeCounterGenerated.push(_p1);
-              return `${match}`;
-            }
-          );
-
-          formattedMessage = formattedMessage.replace(
-            /<button data-counter=(\d+) id='cpy-pre-(\d+)'>/g,
-            function (match) {
-              return `${match}`;
-            }
-          );
-
-          botResponse.innerHTML += `<div id="res-current-bot-o-${counter}">${formattedMessage}</div>`;
-
-          const actionBtnCpyMsg = document.getElementById(
-            `btn-cpy-msg-${counter}`
-          );
-
-          actionBtnCpyMsg.addEventListener("click", (event) => {
-            let counterValue = btnCpyMsg.getAttribute("data-counter");
-            const cpyTextMsg = document.getElementById(
-              `res-current-bot-o-${counterValue}`
-            ).textContent;
-            navigator.clipboard.writeText(cpyTextMsg).then(
-              function () {
-                vscode.postMessage({ command: "copy", text: cpyTextMsg });
-                console.info("Async: Copying to clipboard was successful!");
-              },
-              function (err) {
-                console.error("Async: Could not copy text: ", err);
-              }
-            );
-          });
-
-          _codeCounterGenerated.map((id) => {
-            let matchId = id.match(/code-([^>]+)(?=>)/);
-            if (matchId && matchId[1]) {
-              let uuid = matchId[1];
-              if (uuid.endsWith("'")) {
-                uuid = uuid.slice(0, -1);
-              }
-              addEventListenerToButton(uuid);
-            }
-          });
-          getCurrentChat();
+          // document.getElementById(`loading-${counter}`).remove();
+          // const botResponse = document.createElement("section");
+          // botResponse.id = `res-ollama-bot-view-${counter}`;
+          // botResponse.className = "o-section-response border-x border-b pt-1 pb-0.5 px-1.5 mb-1";
+          //
+          // const groupBtnCpyMsg = document.createElement("div");
+          // groupBtnCpyMsg.id = `group-btn-cpy-msg-${counter}`;
+          // groupBtnCpyMsg.className = "group-btn-cpy-msg flex justify-between mb-1.5";
+          //
+          // const botAvatar = document.createElement("div");
+          // botAvatar.id = `bot-avatar-${counter}`;
+          // botAvatar.className = "bot-avatar";
+          // botAvatar.innerHTML = svgBot;
+          //
+          // const btnCpyMsg = document.createElement("button");
+          // btnCpyMsg.id = `btn-cpy-msg-${counter}`;
+          // btnCpyMsg.className = "btn-cpy-msg text-gray-500 opacity-50 hover:opacity-100 hover:text-slate-400 m-0.5";
+          // btnCpyMsg.title = "copy";
+          // btnCpyMsg.innerHTML = svgCopy;
+          // btnCpyMsg.setAttribute("data-counter", `${counter}`);
+          //
+          // document.getElementById(`wrap-ollama-conversation-${counter}`).appendChild(botResponse);
+          // document.getElementById(`res-ollama-bot-view-${counter}`).appendChild(groupBtnCpyMsg);
+          // document.getElementById(`group-btn-cpy-msg-${counter}`).appendChild(botAvatar);
+          // document.getElementById(`group-btn-cpy-msg-${counter}`).appendChild(btnCpyMsg);
+          //
+          // let _codeCounterGenerated = [];
+          // let formattedMessage = message.text.replace(
+          //     /(<pre id='code-[^>]+)>/g,
+          //   function (match, p1) {
+          //     let _p1 = p1 + ">";
+          //     _codeCounterGenerated.push(_p1);
+          //     return `${match}`;
+          //   }
+          // );
+          //
+          // formattedMessage = formattedMessage.replace(
+          //   /<button data-counter=(\d+) id='cpy-pre-(\d+)'>/g,
+          //   function (match) {
+          //     return `${match}`;
+          //   }
+          // );
+          //
+          // botResponse.innerHTML += `<div id="res-current-bot-o-${counter}">${formattedMessage}</div>`;
+          //
+          // const actionBtnCpyMsg = document.getElementById(
+          //   `btn-cpy-msg-${counter}`
+          // );
+          //
+          // actionBtnCpyMsg.addEventListener("click", (event) => {
+          //   let counterValue = btnCpyMsg.getAttribute("data-counter");
+          //   const cpyTextMsg = document.getElementById(
+          //     `res-current-bot-o-${counterValue}`
+          //   ).textContent;
+          //   navigator.clipboard.writeText(cpyTextMsg).then(
+          //     function () {
+          //       vscode.postMessage({ command: "copy", text: cpyTextMsg });
+          //       console.info("Async: Copying to clipboard was successful!");
+          //     },
+          //     function (err) {
+          //       console.error("Async: Could not copy text: ", err);
+          //     }
+          //   );
+          // });
+          //
+          // _codeCounterGenerated.map((id) => {
+          //   let matchId = id.match(/code-([^>]+)(?=>)/);
+          //   if (matchId && matchId[1]) {
+          //     let uuid = matchId[1];
+          //     if (uuid.endsWith("'")) {
+          //       uuid = uuid.slice(0, -1);
+          //     }
+          //     addEventListenerToButton(uuid);
+          //   }
+          // });
+          // getCurrentChat();
+          createBotResponse(message, counter);
           break;
       }
     });
 
-    function addEventListenerToButton(matchId) {
-      const actionBtnCpyPre = document.getElementById(`cpy-pre-${matchId}`);
+    function createBotResponse(message, counter) {
+      const loadingElement = document.getElementById(`loading-${counter}`);
+      if(loadingElement){
+        loadingElement.remove();
+      }
 
-      if (actionBtnCpyPre) {
-        actionBtnCpyPre.addEventListener("click", (event) => {
-          let _counterValue = actionBtnCpyPre.getAttribute("data-counter");
+      const botResponse = document.createElement("section");
+      botResponse.id = `res-ollama-bot-view-${counter}`;
+      botResponse.className = "o-section-response border-x border-b pt-1 pb-0.5 px-1.5 mb-1";
 
-          const cpyTextMsgPre = document.getElementById(`code-${_counterValue}`).textContent;
+      const groupBtnCpyMsg = document.createElement("div");
+      groupBtnCpyMsg.id = `group-btn-cpy-msg-${counter}`;
+      groupBtnCpyMsg.className = "group-btn-cpy-msg flex justify-between mb-1.5";
 
-          navigator.clipboard.writeText(cpyTextMsgPre).then(
+      const botAvatar = document.createElement("div");
+      botAvatar.id = `bot-avatar-${counter}`;
+      botAvatar.className = "bot-avatar";
+      botAvatar.innerHTML = svgBot;
+
+      const btnCpyMsg = document.createElement("button");
+      btnCpyMsg.id = `btn-cpy-msg-${counter}`;
+      btnCpyMsg.className = "btn-cpy-msg text-gray-500 opacity-50 hover:opacity-100 hover:text-slate-400 m-0.5";
+      btnCpyMsg.title = "copy";
+      btnCpyMsg.innerHTML = svgCopy;
+      btnCpyMsg.setAttribute("data-counter", `${counter}`);
+
+      document.getElementById(`wrap-ollama-conversation-${counter}`).appendChild(botResponse);
+      document.getElementById(`res-ollama-bot-view-${counter}`).appendChild(groupBtnCpyMsg);
+      document.getElementById(`group-btn-cpy-msg-${counter}`).appendChild(botAvatar);
+      document.getElementById(`group-btn-cpy-msg-${counter}`).appendChild(btnCpyMsg);
+
+      let _codeCounterGenerated = [];
+      let formattedMessage = message.text.replace(
+          /(<pre id='code-[^>]+)>/g,
+          function (match, p1) {
+            let _p1 = p1 + ">";
+            _codeCounterGenerated.push(_p1);
+            return `${match}`;
+          }
+      );
+
+      formattedMessage = formattedMessage.replace(
+          /<button data-counter=(\d+) id='cpy-pre-(\d+)'>/g,
+          function (match) {
+            return `${match}`;
+          }
+      );
+
+      botResponse.innerHTML += `<div id="res-current-bot-o-${counter}">${formattedMessage}</div>`;
+
+      addEventListenerCopy('btn-cpy-msg', 'res-current-bot-o', counter);
+
+      codeCounterGenerated(_codeCounterGenerated);
+
+      localStorage.setItem('uuidArr', JSON.stringify(_codeCounterGenerated));
+
+      getCurrentChat();
+    }
+
+    function codeCounterGenerated(_codeCounterGenerated){
+      _codeCounterGenerated.map((id) => {
+        let matchId = id.match(/code-([^>]+)(?=>)/);
+        if (matchId && matchId[1]) {
+          let uuid = matchId[1];
+          if (uuid.endsWith("'")) {
+            uuid = uuid.slice(0, -1);
+          }
+          addEventListenerCopy('cpy-pre', 'code', uuid);
+        }
+      });
+    }
+
+    function addEventListenerCopy(attr1, attr2, counter){
+      const actionBtnCpyMsg = document.getElementById(
+          `${attr1}-${counter}`
+      );
+      if(actionBtnCpyMsg){
+        actionBtnCpyMsg.addEventListener("click", (event) => {
+        let counterValue = actionBtnCpyMsg.getAttribute("data-counter");
+        const cpyTextMsg = document.getElementById(
+            `${attr2}-${counterValue}`
+        ).textContent;
+        navigator.clipboard.writeText(cpyTextMsg).then(
             function () {
-              vscode.postMessage({ command: "copy", text: cpyTextMsgPre });
+              vscode.postMessage({ command: "copy", text: cpyTextMsg });
               console.info("Async: Copying to clipboard was successful!");
             },
             function (err) {
               console.error("Async: Could not copy text: ", err);
             }
-          );
-        });
+        );
+      });
       }
     }
 
@@ -254,40 +328,33 @@
       document.getElementById(`loading-2-${counter}`).appendChild(loadResponseSec_4);
       document.getElementById(`loading-2-${counter}`).appendChild(loadResponseSec_5);
 
-      const actionBtnDel = document.getElementById(`btn-del-${counter}`);
+      eventDeleteConversation('btn-del', 'wrap-ollama-conversation', counter);
+
+      addEventListenerCopy('btn-cpy', 'req-current-bot-o', counter);
+
+      eventResendConversation('resend', 'req-current-bot-o', 'res-ollama-bot-view', 'wrap-ollama-conversation', loadResponseWrap, counter);
+
+    }
+
+    function eventDeleteConversation(attr1, attr2, counter) {
+      const actionBtnDel = document.getElementById(`${attr1}-${counter}`);
       actionBtnDel.addEventListener("click", (event) => {
-        let counterValue = btnDel.getAttribute("data-counter");
+        let counterValue = actionBtnDel.getAttribute("data-counter");
         document
-          .getElementById(`wrap-ollama-conversation-${counterValue}`)
-          .remove();
+            .getElementById(`${attr2}-${counterValue}`)
+            .remove();
       });
+    }
 
-      const actionBtnCpy = document.getElementById(`btn-cpy-${counter}`);
-      actionBtnCpy.addEventListener("click", (event) => {
-        let counterValue = btnCpy.getAttribute("data-counter");
-        const cpyText = document.getElementById(
-          `req-current-bot-o-${counterValue}`
-        ).textContent;
-        navigator.clipboard.writeText(cpyText).then(
-          function () {
-            vscode.postMessage({ command: "copy", text: cpyText });
-            console.info("Async: Copying to clipboard was successful!");
-          },
-          function (err) {
-            console.error("Async: Could not copy text: ", err);
-          }
-        );
-      });
-
-      const actionBtnResend = document.getElementById(`resend-${counter}`);
+    function eventResendConversation(attr1, attr2, attr3, attr4, loadResponseWrap, counter) {
+      const actionBtnResend = document.getElementById(`${attr1}-${counter}`);
       actionBtnResend.addEventListener("click", (event) => {
-        let counterValue = btnReSend.getAttribute("data-counter");
-        let resendText = document.getElementById(`req-current-bot-o-${counterValue}`).textContent;
-        document.getElementById(`res-ollama-bot-view-${counter}`).remove();
-        document.getElementById(`wrap-ollama-conversation-${counter}`).appendChild(loadResponseWrap);
+        let counterValue = actionBtnResend.getAttribute("data-counter");
+        let resendText = document.getElementById(`${attr2}-${counterValue}`).textContent;
+        document.getElementById(`${attr3}-${counter}`).remove();
+        document.getElementById(`${attr4}-${counter}`).appendChild(loadResponseWrap);
         vscode.postMessage({ command: "send", text: resendText });
       });
-
     }
 
     function getCurrentChat() {
@@ -301,31 +368,15 @@
     window.addEventListener('load', (event) => {
       let chatSaved = localStorage.getItem('chat');
       counter = parseInt(localStorage.getItem('counter'));
+      let uuidArray = JSON.parse(localStorage.getItem('uuidArr'));
+      let loadResponseWrap = document.createElement("div");
       if(chatSaved !== ''){
         document.getElementById('wrap-ollama-section').innerHTML = chatSaved;
-        console.log('counter in load', counter)
-        //TODO: create a function to replace the code below, because it is repeated in the code and that happens because
-        // come from the localStorage
-        const actionBtnCpyMsg = document.getElementById(
-            `btn-cpy-msg-${counter}`
-        );
-
-        actionBtnCpyMsg.addEventListener("click", (event) => {
-          // let counterValue = btnCpyMsg.getAttribute("data-counter");
-          const cpyTextMsg = document.getElementById(
-              `res-current-bot-o-${counter}`
-          ).textContent;
-          navigator.clipboard.writeText(cpyTextMsg).then(
-              function () {
-                vscode.postMessage({ command: "copy", text: cpyTextMsg });
-                console.info("Async: Copying to clipboard was successful!");
-              },
-              function (err) {
-                console.error("Async: Could not copy text: ", err);
-              }
-          );
-        });
-
+        eventDeleteConversation('btn-del', 'wrap-ollama-conversation', counter);
+        addEventListenerCopy('btn-cpy', 'req-current-bot-o', counter);
+        eventResendConversation('resend', 'req-current-bot-o', 'res-ollama-bot-view', 'wrap-ollama-conversation', loadResponseWrap, counter);
+        addEventListenerCopy('btn-cpy-msg', 'res-current-bot-o', counter);
+        codeCounterGenerated(uuidArray);
       }
     });
 

@@ -10,10 +10,6 @@ what is "<input type='text'>" in html and give me an example, please?
 could you give me an example of controller in php laravel framework please?
 could you give me an example of controller in nodejs framework please?
 
-cpy-pre-4eb6d0f8-bc9b-4218-80f9-851807a36cea
-
-cpy-pre-4eb6d0f8-bc9b-4218-80f9-851807a36cea
-
 3.9: integration sqlite3 to save the conversation, crud operations. DOING
 
 3.8: create a button to delete all conversation in the history
