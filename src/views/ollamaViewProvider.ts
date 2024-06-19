@@ -18,16 +18,11 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
       localResourceRoots: [this.context.extensionUri]
     };
 
-    webviewView.onDidDispose(() => {
-      console.log("Webview disposed");
-    });
-
     webviewView.webview.onDidReceiveMessage(
         async (message) => {
-          console.log("Received message", message.command);
           switch (message.command) {
             case 'send':
-              const config = vscode.workspace.getConfiguration("my-local-copilot");
+              const config = vscode.workspace.getConfiguration("ollama-script-code");
               const model = config.get("model") as string;
               const editor = vscode.window.activeTextEditor;
               let codeSelected = "";
@@ -54,13 +49,6 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
                   );
                 });
               });
-              return;
-            case 'saving':
-              // SECOND READ HERE PLEASE
-              // the message.text is come to main.js, but not in the case 'saving'
-              const dataSave = message.text;
-              console.log("saving", dataSave);
-              // webviewView.webview.postMessage({command: 'loadChat', text: message.text});
               return;
           }
         },
@@ -111,7 +99,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
         
             <div class="relative wrap-ol">
             
-              <div class="overflow-scroll mb-16 wrapp-all-conversation-ollama">
+              <div class="overflow-scroll mb-16 wrapp-all-conversation-ollama" id="wrapp-all-conversation-ollama">
                   <div class="sticky top-0 flex justify-end bg-slate-800 p-2 btn-options-ollama">
                       <button class="history-all-chats mr-0.5" id="openModalHistory">${svgHistory}</button>
                       <button id="del-all-chats" class="del-all-chats ml-0.5">${svgDelete}</button>

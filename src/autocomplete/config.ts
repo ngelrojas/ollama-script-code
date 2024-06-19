@@ -14,8 +14,8 @@ export let responsePreviewDelay: number;
 export let continueInline: boolean | undefined;
 
 export function updateVSConfig() {
-    VSConfig = vscode.workspace.getConfiguration("mylocal-autocoder");
-    const config = vscode.workspace.getConfiguration("my-local-copilot");
+    VSConfig = vscode.workspace.getConfiguration("ollama-script-code");
+    const config = vscode.workspace.getConfiguration("ollama-script-code");
     apiEndpoint = VSConfig.get("endpoint") || "http://localhost:11434/api/generate";
     apiModel = config.get("model") as string;
     apiMessageHeader = VSConfig.get("message header") || "";

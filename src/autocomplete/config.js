@@ -26,8 +26,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateVSConfig = exports.continueInline = exports.responsePreviewDelay = exports.responsePreviewMaxTokens = exports.responsePreview = exports.completionKeys = exports.promptWindowSize = exports.numPredict = exports.apiMessageHeader = exports.apiTemperature = exports.apiModel = exports.apiEndpoint = exports.VSConfig = void 0;
 const vscode = __importStar(require("vscode"));
 function updateVSConfig() {
-    exports.VSConfig = vscode.workspace.getConfiguration("mylocal-autocoder");
-    const config = vscode.workspace.getConfiguration("my-local-copilot");
+    exports.VSConfig = vscode.workspace.getConfiguration("ollama-script-code");
+    const config = vscode.workspace.getConfiguration("ollama-script-code");
     exports.apiEndpoint = exports.VSConfig.get("endpoint") || "http://localhost:11434/api/generate";
     exports.apiModel = config.get("model");
     exports.apiMessageHeader = exports.VSConfig.get("message header") || "";
