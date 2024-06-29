@@ -123,11 +123,12 @@ table {
   border-spacing: 0;
 }
 /*root vars*/
-:root{
+:root {
   --border-x: 0.5px solid #ddd;
   --text-wrap: pretty;
   --bg-color: #21262d;
   --bg-color-hover: rgba(44, 52, 60, 0.15);
+  --bg-tr-hover: #646363ca;
 }
 /*
     styles for chat bot ollama
@@ -176,28 +177,39 @@ main > .wrap-ol {
   border-right: var(--border-x);
 }
 
-.text-dynamic{
+.text-dynamic {
   resize: none;
   min-height: 50px;
   form-sizing: content;
 }
 
-.code-pre{
+.code-pre {
   border: 1px solid;
   padding: 1%;
   background: #353434;
-  margin: 1%!important;
+  margin: 1% !important;
   text-wrap: var(--text-wrap);
 }
-.code-pre > pre{
+.code-pre > pre {
   text-wrap: var(--text-wrap);
 }
-.bg-dark-modal{
+.bg-dark-modal {
   background-color: var(--bg-color);
 }
-.bg-dark-modal-hover{
+.bg-dark-modal-hover {
   background-color: var(--bg-color-hover);
 }
-.table-history > tbody > tr:hover{
+.table-history > tbody > tr:hover {
   cursor: pointer;
+  background-color: var(--bg-tr-hover);
+}
+
+/* table history */
+.table-history-body > tr {
+  text-wrap: pretty;
+}
+
+.table-history-body tr td:first-child {
+  width: 70%;
+  text-align: left;
 }
