@@ -7,6 +7,8 @@
   const svgResend = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="m16.89 15.5l1.42 1.39c.9-1.16 1.45-2.5 1.62-3.89h-2.02c-.14.87-.48 1.72-1.02 2.5M13 17.9v2.02c1.39-.17 2.74-.71 3.9-1.61l-1.44-1.44c-.75.54-1.59.89-2.46 1.03m6.93-6.9a7.9 7.9 0 0 0-1.62-3.89l-1.42 1.42c.54.75.88 1.6 1.02 2.47m-2.36-5.45L11 1v3.07C7.06 4.56 4 7.92 4 12s3.05 7.44 7 7.93v-2.02c-2.84-.48-5-2.94-5-5.91s2.16-5.43 5-5.91V10z"/></svg>`;
 
   document.addEventListener("DOMContentLoaded", (event) => {
+    const ollamaDB = new OllamaDB("olDB");
+
     document.getElementById("openModalHistory").addEventListener("click", function () {
       document.getElementById("modalHistory").classList.remove("hidden");
     });
@@ -102,6 +104,15 @@
       localStorage.setItem("uuidArr", JSON.stringify(_codeCounterGenerated));
 
       getCurrentChat();
+      let chatSaving = document.getElementById("wrap-ollama-section").innerHTML;
+      let historyText = document.getElementById(`req-current-bot-o-${counter}`).textContent;
+      ollamaDB.create({
+        title: historyText,
+        dateTime: new Date().toLocaleString(),
+        chat: chatSaving,
+        counter: counter,
+        uuidArr: _codeCounterGenerated,
+      });
     }
 
     function codeCounterGenerated(_codeCounterGenerated) {
@@ -299,7 +310,7 @@
         loadResponseWrap.id = `loading-${counter}`;
         loadResponseWrap.className = "o-section-response border-x border-b pt-1 pb-0.5 px-1.5 mb-1";
 
-        loadingChat(counter, loadResponseWrap);
+        // loadingChat(counter, loadResponseWrap);
 
         eventDeleteConversation("btn-del", "wrap-ollama-conversation", counter);
         addEventListenerCopy("btn-cpy", "req-current-bot-o", counter);
@@ -317,4 +328,54 @@
       }
     });
   });
+
+  class OllamaDB {
+    constructor(storageKey) {
+      this.storageKey = storageKey;
+      // Initialize the storage with an empty array if it doesn't exist
+      if (!localStorage.getItem(this.storageKey)) {
+        localStorage.setItem(this.storageKey, JSON.stringify([]));
+      }
+    }
+
+    // Create a new item
+    create({ title, dateTime, chat, counter, uuidArr }) {
+      const items = JSON.parse(localStorage.getItem(this.storageKey)) || [];
+      const id = items.length > 0 ? Math.max(...items.map((item) => item.id)) + 1 : 1;
+      const item = { id, title, dateTime, chat, counter, uuid: uuidArr };
+      items.push(item);
+      localStorage.setItem(this.storageKey, JSON.stringify(items));
+    }
+
+    // Read an item by id
+    read(id) {
+      const items = JSON.parse(localStorage.getItem(this.storageKey));
+      return items.find((item) => item.id === parseInt(id));
+    }
+
+    // Update an item by uuid
+    update(uuid, updatedFields) {
+      const items = JSON.parse(localStorage.getItem(this.storageKey));
+      const itemIndex = items.findIndex((item) => item.uuid === uuid);
+      if (itemIndex !== -1) {
+        items[itemIndex] = { ...items[itemIndex], ...updatedFields };
+        localStorage.setItem(this.storageKey, JSON.stringify(items));
+      }
+    }
+
+    // Delete an item by uuid
+    delete(id) {
+      const items = JSON.parse(localStorage.getItem(this.storageKey));
+      if (Array.isArray(items)) {
+        const filteredItems = items.filter((item) => item.id !== parseInt(id));
+        localStorage.setItem(this.storageKey, JSON.stringify(filteredItems));
+      }
+    }
+
+    // List all items
+    list() {
+      return JSON.parse(localStorage.getItem(this.storageKey));
+    }
+  }
+  window.OllamaDB = OllamaDB;
 })();
