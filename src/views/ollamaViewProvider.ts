@@ -68,6 +68,9 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
     const scriptMainUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.context.extensionUri, "src/media", "main.js")
     );
+    const scriptToolsUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.context.extensionUri, "src/media", "tools.js")
+    );
     const scriptTailwindJsUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.context.extensionUri, "src/media", "tailwindcss.3.2.4.min.js")
     );
@@ -86,6 +89,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
         <link href='${stylesMainUri}' rel="stylesheet" />
         <script src='${scriptTailwindJsUri}'></script>
         <script src='${scriptMainUri}'></script>
+        <script src='${scriptToolsUri}'></script>
         <script>
           document.addEventListener('DOMContentLoaded', (event) => {
               const olDB = new OllamaDB("olDB");
@@ -95,6 +99,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
 
                   if (olDBList.length === 0) {
                       const row = document.createElement('tr');
+                      
                       const cell = document.createElement('td');
                       cell.textContent = 'There is no data';
                       cell.setAttribute('colspan', '2');
@@ -103,13 +108,14 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
                   } else {
                       olDBList.forEach(item => {
                           const row = document.createElement('tr');
-                          
+                          row.id = 'id-tr-' + item.id;    
                           const dataCell = document.createElement('td');
                           dataCell.setAttribute('id-history', item.id);
                           const optionCell = document.createElement('td');
                           const btnDel = document.createElement('button');
                           btnDel.id = 'del-history-' + item.id;
-                          btnDel.innerHTML = 'DEL';
+                          btnDel.setAttribute('btn-del-history', item.id)
+                          btnDel.innerHTML = '${svgDelete}';
                           const titleCell = document.createElement('div');
 
                           dataCell.addEventListener('click', function() {
@@ -120,7 +126,18 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
                               console.log('HISTORY IS ', getHistory);
                               
                           });
-                          titleCell.textContent = item.title;
+
+                          btnDel.addEventListener('click', function(){
+                            const idDelHistory = this.getAttribute('btn-del-history');
+                            olDB.delete(idDelHistory)
+                            const delRow = document.getElementById('id-tr-'+idDelHistory);
+                            console.log(delRow);
+                            if(delRow){
+                              delRow.remove();
+                            }
+                          });
+
+                          titleCell.textContent = truncateTitle(item.title, 10);
                           dataCell.appendChild(titleCell);
 
                           optionCell.appendChild(btnDel);

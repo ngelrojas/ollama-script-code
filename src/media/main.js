@@ -350,7 +350,7 @@
     // Read an item by id
     read(id) {
       const items = JSON.parse(localStorage.getItem(this.storageKey));
-      return items.find((item) => item.id === id);
+      return items.find((item) => item.id === parseInt(id));
     }
 
     // Update an item by uuid
@@ -364,10 +364,12 @@
     }
 
     // Delete an item by uuid
-    delete(uuid) {
+    delete(id) {
       const items = JSON.parse(localStorage.getItem(this.storageKey));
-      const filteredItems = items.filter((item) => item.uuid !== uuid);
-      localStorage.setItem(this.storageKey, JSON.stringify(filteredItems));
+      if (Array.isArray(items)) {
+        const filteredItems = items.filter((item) => item.id !== parseInt(id));
+        localStorage.setItem(this.storageKey, JSON.stringify(filteredItems));
+      }
     }
 
     // List all items
