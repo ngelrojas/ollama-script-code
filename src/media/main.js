@@ -299,6 +299,7 @@
     window.addEventListener("unload", getCurrentChat);
 
     window.addEventListener("load", (event) => {
+      // Load the chat from the local storage called olDB
       let chatSaved = localStorage.getItem("chat");
       counter = parseInt(localStorage.getItem("counter"));
       let uuidArray = JSON.parse(localStorage.getItem("uuidArr"));
