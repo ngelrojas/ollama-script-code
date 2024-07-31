@@ -71,6 +71,9 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
     const scriptToolsUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.context.extensionUri, "src/media", "tools.js")
     );
+    const scriptHistoryModalUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.context.extensionUri, "src/media", "historyModal.js")
+    );
     const scriptTailwindJsUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.context.extensionUri, "src/media", "tailwindcss.3.2.4.min.js")
     );
@@ -87,73 +90,11 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href='${stylesTailwindCssUri}' rel="stylesheet" />
         <link href='${stylesMainUri}' rel="stylesheet" />
+        
         <script src='${scriptTailwindJsUri}'></script>
         <script src='${scriptMainUri}'></script>
         <script src='${scriptToolsUri}'></script>
-        <script>
-          document.addEventListener('DOMContentLoaded', (event) => {
-              const olDB = new OllamaDB("olDB");
-              const olDBList = olDB.list(); 
-              const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
-                  tableBody.innerHTML = '';
-
-                  if (olDBList.length === 0) {
-                      const row = document.createElement('tr');
-                      
-                      const cell = document.createElement('td');
-                      cell.textContent = 'There is no data';
-                      cell.setAttribute('colspan', '2');
-                      row.appendChild(cell);
-                      tableBody.appendChild(row);
-                  } else {
-                      olDBList.forEach(item => {
-                          const row = document.createElement('tr');
-                          row.id = 'id-tr-' + item.id;    
-                          const dataCell = document.createElement('td');
-                          dataCell.setAttribute('id-history', item.id);
-                          const optionCell = document.createElement('td');
-                          const btnDel = document.createElement('button');
-                          btnDel.id = 'del-history-' + item.id;
-                          btnDel.setAttribute('btn-del-history', item.id)
-                          btnDel.innerHTML = '${svgDelete}';
-                          const titleCell = document.createElement('div');
-
-                          dataCell.addEventListener('click', function() {
-                              
-                              const idHistory = this.getAttribute('id-history');
-                              console.log('Clicked row ID-History:', idHistory);
-                              let getHistory = olDB.read(parseInt(idHistory));
-                              console.log('HISTORY IS ', getHistory);
-                              
-                          });
-
-                          btnDel.addEventListener('click', function(){
-                            const idDelHistory = this.getAttribute('btn-del-history');
-                            olDB.delete(idDelHistory)
-                            const delRow = document.getElementById('id-tr-'+idDelHistory);
-                            console.log(delRow);
-                            if(delRow){
-                              delRow.remove();
-                            }
-                          });
-
-                          titleCell.textContent = truncateTitle(item.title, 10);
-                          dataCell.appendChild(titleCell);
-
-                          optionCell.appendChild(btnDel);
-                          
-                          const dateTimeCell = document.createElement('div');
-                          dateTimeCell.textContent = item.dateTime;
-                          dataCell.appendChild(dateTimeCell);
-                          
-                          row.appendChild(dataCell);
-                          row.appendChild(optionCell);
-                          
-                          tableBody.appendChild(row);
-                      });
-                  }
-            });
-        </script>
+        <script src='${scriptHistoryModalUri}'></script>
         <title>Ollama Script Code Chat</title>
       </head>
       <body>

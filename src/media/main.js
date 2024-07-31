@@ -46,6 +46,15 @@
         case "response":
           createBotResponse(message, counter);
           break;
+        case "chatId":
+          chatId = message.text;
+          const chats = ollamaDB.read(chatId);
+          if (chats) {
+            document.getElementById("wrap-ollama-section").innerHTML = chats.chat;
+            counter = chats.counter;
+            let uuidArray = chats.uuid;
+            codeCounterGenerated(uuidArray);
+          }
       }
     });
 
@@ -310,8 +319,6 @@
         const loadResponseWrap = document.createElement("div");
         loadResponseWrap.id = `loading-${counter}`;
         loadResponseWrap.className = "o-section-response border-x border-b pt-1 pb-0.5 px-1.5 mb-1";
-
-        // loadingChat(counter, loadResponseWrap);
 
         eventDeleteConversation("btn-del", "wrap-ollama-conversation", counter);
         addEventListenerCopy("btn-cpy", "req-current-bot-o", counter);
