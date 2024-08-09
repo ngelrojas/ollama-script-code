@@ -102,7 +102,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
         
             <div class="relative wrap-ol">
             
-              <div class="overflow-scroll mb-16 wrapp-all-conversation-ollama" id="wrapp-all-conversation-ollama">
+              <div class="overflow-scroll mb-24 wrapp-all-conversation-ollama" id="wrapp-all-conversation-ollama">
                   <div class="sticky top-0 flex justify-end bg-slate-800 p-2 btn-options-ollama">
                       <button class="history-all-chats mr-0.5" id="openModalHistory">${svgHistory}</button>
                       <button id="del-all-chats" class="del-all-chats ml-0.5">${svgDelete}</button>
@@ -110,15 +110,26 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
                   <section class="wrap-ollama-section mt-0.5" id="wrap-ollama-section" />
               </div>
               
-              <div class="absolute bottom-0 w-full flex flex-row my-0.5" id="chatForm">
+              <div class="bg-slate-400 absolute bottom-0 w-full flex flex-col my-0.5" id="chatForm">
                 <textarea class="p-2 text-black w-full rounded-l-sm text-dynamic" id="send-req-ollama-bot" placeholder="Type your message here" cols="30"></textarea>
+                <div class="grid">
+                  <div class="relative col-start-1">
+                    <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="imageUpload" accept="image/*" />
+                    <div class="p-2 bg-slate-400 flex justify-center items-center rounded-r-sm cursor-pointer">
+                      <span class="text-white text-xl font-bold">+</span>
+                    </div>
+                  </div>
+                  <button class="col-end-7 p-1 bg-slate-400 w-1/7 flex justify-center items-center rounded-r-sm" id="send">
+                      ${svgSend}
+                  </button>
+                </div>
                 
-                <button class="p-1 bg-slate-400 w-1/7 flex justify-center items-center rounded-r-sm" id="send">
-                    ${svgSend}
-                </button>
+
+                
               </div>
               
             </div>
+
 <!--modal init-->
 <div class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true" id="modalHistory">
   <div class="flex items-start justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
