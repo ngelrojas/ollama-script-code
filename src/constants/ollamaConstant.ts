@@ -28,7 +28,7 @@ export const OLLAMA_SETTING = {
     MODEL: "Models",
     PARAMETERS: "Parameters",
   },
-  SUB_MENU:{
+  SUB_MENU: {
     NUMBER_PREDICTION: "Number Prediction",
     WIN_SIZE: "Window Size",
     KEY_COMPLETION: "Key Completion",
@@ -37,7 +37,7 @@ export const OLLAMA_SETTING = {
     DELAY: "Delay",
     INLINE: "Inline",
     TEMPERATURE: "Temperature",
-  }
+  },
 };
 
 export const OLLAMA_COMMAND = {
@@ -48,10 +48,11 @@ export const OLLAMA_COMMAND = {
   FINISHED: "Autocompletion request completed",
   ERROR: "Failed to generate autocompletion",
   COMPLETE: "Autocompletion with OllamaScriptCode",
-  PRESS: 'Press `Enter` to get an autocompletion from OllamaScriptCode',
+  PRESS: "Press `Enter` to get an autocompletion from OllamaScriptCode",
 };
 
 export const OLLAMA_ROLES = {
-    USER: "user",
-    ASSISTANT: "assistant"
-}
+  USER: "user",
+  ASSISTANT: "assistant",
+  SYSTEM: "system",
+};
