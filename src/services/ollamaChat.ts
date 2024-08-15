@@ -28,9 +28,8 @@ export const OllamaChat = async (
     role: OLLAMA_ROLES.USER,
     content: `${inputMsg.question} ${inputMsg.code}`,
   });
-  //TODO: here put a inputMsg.img, but first check if llava model has a docs
+
   let response: any;
-  // console.log("before in if the model is", inputModel);
 
   if (inputModel !== "llava") {
     console.log("inside if model = ", inputModel);
@@ -43,16 +42,14 @@ export const OllamaChat = async (
       },
     });
   } else {
-    // console.log("inside the else model=", inputModel);
     const inputUser = {
       image: inputMsg.image,
       question: inputMsg.question,
     };
-    // console.log("SEND TO LLAVA = ", inputUser);
+
     try {
       const comeResponse = await apiLLava(inputUser);
-      // Handle the response here
-      console.log("HERE RESPONSE = ", comeResponse.response);
+
       response = comeResponse.response;
     } catch (e: any) {
       console.log("ERROR IN SERVICE", e.message);
@@ -69,7 +66,7 @@ export const OllamaChat = async (
   }
 
   const codeBlockPattern = /```[\s\S]*?```/g;
-  console.log("CODE", response);
+  //TODO: Fix this
   // let matches = response.message.content.match(codeBlockPattern);
   let matches = response.match(codeBlockPattern);
   let counter = "";
@@ -77,11 +74,13 @@ export const OllamaChat = async (
   if (matches) {
     matches.forEach((match: any) => {
       let modifiedMatch = escapeHtml(match).replace(/^```/, "<pre>").replace(/```$/, "</pre>");
+      //TODO: Fix this
       // response.message.content = response.message.content.replace(match, modifiedMatch);
       response = response.replace(match, modifiedMatch);
     });
   }
 
+  //TODO: Fix this
   // let splitContent = response.message.content.split(/<\/?pre>/);
   let splitContent = response.split(/<\/?pre>/);
   for (let i = 0; i < splitContent.length; i++) {
@@ -101,6 +100,7 @@ export const OllamaChat = async (
   conversationHistory.push({
     role: OLLAMA_ROLES.SYSTEM,
     content: response,
+    //TODO: Fix this
     // content: response.message.content,
   });
 
