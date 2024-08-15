@@ -2,12 +2,14 @@ import ollama from "ollama";
 import { v4 as uuidv4 } from "uuid";
 import { OLLAMA_ROLES } from "../constants/ollamaConstant";
 import { apiTemperature } from "../autocomplete/config";
+import { apiLLava } from "./llavaModel";
 let { numPredict } = require("../autocomplete/config");
 numPredict = parseInt(numPredict);
 
 interface userRequest {
   question: string;
   code: string;
+  image: string;
 }
 
 interface Message {
@@ -26,15 +28,36 @@ export const OllamaChat = async (
     role: OLLAMA_ROLES.USER,
     content: `${inputMsg.question} ${inputMsg.code}`,
   });
+  //TODO: here put a inputMsg.img, but first check if llava model has a docs
+  let response: any;
+  // console.log("before in if the model is", inputModel);
 
-  const response = await ollama.chat({
-    model: `${inputModel}`,
-    messages: conversationHistory,
-    options: {
-      num_predict: numPredict,
-      temperature: apiTemperature,
-    },
-  });
+  if (inputModel !== "llava") {
+    console.log("inside if model = ", inputModel);
+    response = await ollama.chat({
+      model: `${inputModel}`,
+      messages: conversationHistory,
+      options: {
+        num_predict: numPredict,
+        temperature: apiTemperature,
+      },
+    });
+  } else {
+    // console.log("inside the else model=", inputModel);
+    const inputUser = {
+      image: inputMsg.image,
+      question: inputMsg.question,
+    };
+    // console.log("SEND TO LLAVA = ", inputUser);
+    try {
+      const comeResponse = await apiLLava(inputUser);
+      // Handle the response here
+      console.log("HERE RESPONSE = ", comeResponse.response);
+      response = comeResponse.response;
+    } catch (e: any) {
+      console.log("ERROR IN SERVICE", e.message);
+    }
+  }
 
   function escapeHtml(unsafe: string) {
     return unsafe
@@ -46,18 +69,21 @@ export const OllamaChat = async (
   }
 
   const codeBlockPattern = /```[\s\S]*?```/g;
-  let matches = response.message.content.match(codeBlockPattern);
+  console.log("CODE", response);
+  // let matches = response.message.content.match(codeBlockPattern);
+  let matches = response.match(codeBlockPattern);
   let counter = "";
 
   if (matches) {
-    matches.forEach((match) => {
+    matches.forEach((match: any) => {
       let modifiedMatch = escapeHtml(match).replace(/^```/, "<pre>").replace(/```$/, "</pre>");
-      response.message.content = response.message.content.replace(match, modifiedMatch);
+      // response.message.content = response.message.content.replace(match, modifiedMatch);
+      response = response.replace(match, modifiedMatch);
     });
   }
 
-  let splitContent = response.message.content.split(/<\/?pre>/);
-
+  // let splitContent = response.message.content.split(/<\/?pre>/);
+  let splitContent = response.split(/<\/?pre>/);
   for (let i = 0; i < splitContent.length; i++) {
     counter = uuidv4();
     if (i % 2 === 0) {
@@ -74,7 +100,8 @@ export const OllamaChat = async (
 
   conversationHistory.push({
     role: OLLAMA_ROLES.SYSTEM,
-    content: response.message.content,
+    content: response,
+    // content: response.message.content,
   });
 
   return formattedContent;

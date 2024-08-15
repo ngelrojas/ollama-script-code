@@ -9,7 +9,7 @@ what is <input type='text'> in html and give me an example, please?
 what is "<input type='text'>" in html and give me an example, please?
 could you give me an example of controller in php laravel framework please?
 could you give me an example of controller in nodejs framework please?
-
+what is the image?
 3.9: integration sqlite3 to save the conversation, crud operations. DOING
 
 3.8: create a button to delete all conversation in the history
