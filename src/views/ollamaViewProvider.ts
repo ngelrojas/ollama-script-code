@@ -1,5 +1,8 @@
 import * as vscode from "vscode";
 import { OllamaChat } from "../services/ollamaChat";
+import { OllamaChatLlava } from "../services/ollamaChatLlava";
+
+let model = "";
 
 export class OllamaViewProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
@@ -23,7 +26,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
         switch (message.command) {
           case "send":
             const config = vscode.workspace.getConfiguration("ollama-script-code");
-            const model = config.get("model") as string;
+            model = config.get("model") as string;
             const editor = vscode.window.activeTextEditor;
             let codeSelected = "";
             if (editor) {
@@ -39,8 +42,13 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
               code: codeSelected,
               image: userImgQuestion,
             };
-            // console.log("current model send", model);
-            const response = await OllamaChat(model, userRequest, conversationHistory);
+            let response = "";
+            if (model === "llava") {
+              response = await OllamaChatLlava(userRequest, conversationHistory);
+            } else {
+              response = await OllamaChat(model, userRequest, conversationHistory);
+            }
+
             webviewView.webview.postMessage({ command: "response", text: response });
             return;
           case "copy":
@@ -85,6 +93,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
     const svgHistory = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M5.625 6.65q-.425 0-.712-.3t-.288-.725t.288-.712t.712-.288t.725.288t.3.712t-.3.725t-.725.3m4.05-2.325q-.425 0-.725-.3t-.3-.725t.3-.713t.725-.287t.713.288t.287.712t-.288.725t-.712.3m4.65 0q-.425 0-.712-.3t-.288-.725t.288-.712t.712-.288t.725.288t.3.712t-.3.725t-.725.3m4.05 2.325q-.425 0-.725-.3t-.3-.725t.3-.725t.725-.3t.713.3t.287.725t-.288.725t-.712.3m2.325 4.025q-.425 0-.725-.288t-.3-.712t.3-.712t.725-.288t.713.288t.287.712t-.287.713t-.713.287m0 4.675q-.425 0-.725-.3t-.3-.725t.3-.712t.725-.288t.713.288t.287.712t-.287.725t-.713.3m-2.325 4.025q-.425 0-.725-.288t-.3-.712t.3-.725t.725-.3t.713.3t.287.725t-.287.713t-.713.287m-4.05 2.325q-.425 0-.712-.288t-.288-.712t.288-.725t.712-.3t.725.3t.3.725t-.3.713t-.725.287m-4.65 0q-.425 0-.725-.287t-.3-.713t.3-.725t.725-.3t.713.3t.287.725t-.288.713t-.712.287m-4.05-2.35q-.425 0-.712-.288t-.288-.712t.288-.712t.712-.288t.713.288t.287.712t-.288.713t-.712.287M3.3 15.325q-.425 0-.712-.3T2.3 14.3t.288-.712t.712-.288t.725.288t.3.712t-.3.725t-.725.3m0-4.65q-.425 0-.712-.288T2.3 9.676t.288-.725t.712-.3t.725.3t.3.725t-.3.713t-.725.287m9.7.925l3 3q.275.275.275.7T16 16t-.7.275t-.7-.275l-3.3-3.3q-.15-.15-.225-.337T11 11.975V8q0-.425.288-.712T12 7t.713.288T13 8z"/></svg>`;
     const svgClose = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 20 20"><path fill="currentColor" d="M10 8.586L2.929 1.515L1.515 2.929L8.586 10l-7.071 7.071l1.414 1.414L10 11.414l7.071 7.071l1.414-1.414L11.414 10l7.071-7.071l-1.414-1.414z"/></svg>`;
     const svgPlus = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 2v28M2 16h28"/></svg>`;
+    const svgRemove = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 40 40"><path fill="currentColor" d="M21.499 19.994L32.755 8.727a1.064 1.064 0 0 0-.001-1.502c-.398-.396-1.099-.398-1.501.002L20 18.494L8.743 7.224c-.4-.395-1.101-.393-1.499.002a1.05 1.05 0 0 0-.309.751c0 .284.11.55.309.747L18.5 19.993L7.245 31.263a1.064 1.064 0 0 0 .003 1.503c.193.191.466.301.748.301h.006c.283-.001.556-.112.745-.305L20 21.495l11.257 11.27c.199.198.465.308.747.308a1.06 1.06 0 0 0 1.061-1.061c0-.283-.11-.55-.31-.747z"/></svg>`;
 
     return `
       <!DOCTYPE html>
@@ -117,12 +126,18 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
               <div class="bg-slate-400 absolute bottom-0 w-full flex flex-col my-0.5" id="chatForm">
                 <textarea class="p-2 text-black w-full rounded-l-sm text-dynamic" id="send-req-ollama-bot" placeholder="Type your message here" cols="30"></textarea>
                 <div class="grid">
-                  <div class="relative col-start-1">
-                    <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="send-req-ollama-bot-img" accept="image/*" />
+                  <div class="relative ${model === "lava" ? "block" : "hidden"}">
+                    <img id="image-preview" class="mx-1 my-1 rounded  preview-o-img hidden" />  
+                    <button class="absolute top-0 right-16 bg-red-500 text-white rounded-full w-4 h-4 flex justify-center items-center" onClick="removeImage()">${svgRemove}</button>
+                  </div>
+                  
+                  <div class="relative col-start-1 ${model === "lava" ? "block" : "hidden"}">
+                    <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="send-req-ollama-bot-img" accept="image/*" onChange="previewImage(event)" />
                     <div class="p-2 bg-slate-400 flex justify-center items-center rounded-r-sm cursor-pointer">
                       <span class="text-white text-xl font-bold">${svgPlus}</span>
                     </div>
                   </div>
+
                   <button class="col-end-7 p-1 bg-slate-400 w-1/7 flex justify-center items-center rounded-r-sm" id="send">
                       ${svgSend}
                   </button>

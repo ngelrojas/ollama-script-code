@@ -1,3 +1,6 @@
+import ollama from "ollama";
+import { apiTemperature, numPredict } from "../autocomplete/config";
+
 interface ILlava {
   question: string;
   image: any;
@@ -33,3 +36,13 @@ export async function apiLLava({ question, image }: ILlava): Promise<any> {
     throw error;
   }
 }
+
+export const apiGenLLava = async ({ question, image }: ILlava) => {
+  const response = await ollama.generate({
+    model: "llava",
+    prompt: `${question}`,
+    stream: false,
+    images: [image],
+  });
+  return response;
+};
