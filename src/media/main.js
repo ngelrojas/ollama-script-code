@@ -17,10 +17,61 @@
       document.getElementById("modalHistory").classList.add("hidden");
     });
 
+    function convertImgToBase64(imgElement) {
+      return new Promise((resolve, reject) => {
+        // Ensure the image is fully loaded
+        if (!imgElement.complete) {
+          imgElement.onload = () => {
+            resolve(drawImageToCanvas(imgElement));
+          };
+          imgElement.onerror = reject;
+        } else {
+          resolve(drawImageToCanvas(imgElement));
+        }
+      });
+    }
+
+    function drawImageToCanvas(imgElement) {
+      // Create a canvas element
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // Set canvas dimensions to match the image
+      canvas.width = imgElement.width;
+      canvas.height = imgElement.height;
+
+      // Draw the image onto the canvas
+      ctx.drawImage(imgElement, 0, 0);
+
+      // Get the Base64 string
+      return canvas.toDataURL("image/png");
+    }
+
     let counter = 0;
+    let sendImg;
 
     const sendButton = document.getElementById("send");
     const requestInput = document.getElementById("send-req-ollama-bot");
+    const requestImg = document.getElementById("send-req-ollama-bot-img");
+
+    requestImg.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const base64Image = e.target.result;
+          const imgElement = document.createElement("img");
+          imgElement.src = base64Image;
+          const base64ImageRes = await convertImgToBase64(imgElement);
+          const base64String = base64ImageRes.replace(/^data:image\/\w+;base64,/, "");
+          // data:image/png;base64,iVBORw0KGgo
+          sendImg = base64String;
+          // vscode.postMessage({ command: "send", text: base64ImageRes });
+        };
+        reader.readAsDataURL(file);
+      }
+    });
 
     if (sendButton && requestInput) {
       sendButton.addEventListener("click", sendInfoChat);
@@ -46,6 +97,15 @@
         case "response":
           createBotResponse(message, counter);
           break;
+        case "chatId":
+          chatId = message.text;
+          const chats = ollamaDB.read(chatId);
+          if (chats) {
+            document.getElementById("wrap-ollama-section").innerHTML = chats.chat;
+            counter = chats.counter;
+            let uuidArray = chats.uuid;
+            codeCounterGenerated(uuidArray);
+          }
       }
     });
 
@@ -159,7 +219,12 @@
     function sendInfoChat() {
       counter++;
       let _requestInputValue = escapeHtml(requestInput.value);
-      vscode.postMessage({ command: "send", text: requestInput.value });
+      let sendImgTxt = {
+        txt: requestInput.value,
+        img: sendImg,
+      };
+
+      vscode.postMessage({ command: "send", text: sendImgTxt });
 
       const loadResponseWrap = document.createElement("div");
       loadResponseWrap.id = `loading-${counter}`;
@@ -299,6 +364,7 @@
     window.addEventListener("unload", getCurrentChat);
 
     window.addEventListener("load", (event) => {
+      // Load the chat from the local storage called olDB
       let chatSaved = localStorage.getItem("chat");
       counter = parseInt(localStorage.getItem("counter"));
       let uuidArray = JSON.parse(localStorage.getItem("uuidArr"));
@@ -309,8 +375,6 @@
         const loadResponseWrap = document.createElement("div");
         loadResponseWrap.id = `loading-${counter}`;
         loadResponseWrap.className = "o-section-response border-x border-b pt-1 pb-0.5 px-1.5 mb-1";
-
-        // loadingChat(counter, loadResponseWrap);
 
         eventDeleteConversation("btn-del", "wrap-ollama-conversation", counter);
         addEventListenerCopy("btn-cpy", "req-current-bot-o", counter);
@@ -378,4 +442,21 @@
     }
   }
   window.OllamaDB = OllamaDB;
+
+  class ModelDB {
+    constructor(storageKey) {
+      this.storageKey = storageKey;
+      // Initialize the storage with an empty array if it doesn't exist
+      if (!localStorage.getItem(this.storageKey)) {
+        localStorage.setItem(this.storageKey, JSON.stringify([]));
+      }
+    }
+    createModels({ nameModule }) {
+      localStorage.setItem(this.storageKey, JSON.stringify(nameModule));
+    }
+    getModels() {
+      return JSON.parse(localStorage.getItem(this.storageKey));
+    }
+  }
+  window.ModelDB = ModelDB;
 })();
