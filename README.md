@@ -19,7 +19,3 @@ Install Ollama on local machine and then launch the extension in VSCode, everyth
 Models
 Currently, Ollama script code support all models of Ollama framework. You can use any model you want.
 LLava model is included in the extension, but you need to a good memory to run it.
-
-Changelog
-[0.0.1]
-Initial release of Ollama Script Code
