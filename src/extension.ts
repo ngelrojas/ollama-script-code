@@ -18,7 +18,6 @@ import {
 
 import { autocompleteCommand } from "./autocomplete/command";
 import { provideCompletionItems } from "./autocomplete/provider";
-// import OllamaDB from "./dbCore/db";
 
 updateVSConfig();
 
@@ -31,9 +30,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   checkOllamaRunning();
-
-  // const olDb = new OllamaDB();
-  // olDb.initializeStorage();
 
   context.subscriptions.push(
     vscode.commands.registerCommand("ollama-script-code.openSettings", async () => {

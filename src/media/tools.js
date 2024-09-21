@@ -33,3 +33,9 @@ function removeImage() {
 }
 
 window.removeImage = removeImage;
+
+// function getLocalStorage() {
+//   return localStorage.getItem("selectedModel");
+// }
+
+// window.getLocalStorage = getLocalStorage;

@@ -224,7 +224,6 @@
         img: sendImg,
       };
 
-      // console.log("HERE TO SEND IMAGES=", sendImg);
       vscode.postMessage({ command: "send", text: sendImgTxt });
 
       const loadResponseWrap = document.createElement("div");
@@ -443,4 +442,21 @@
     }
   }
   window.OllamaDB = OllamaDB;
+
+  class ModelDB {
+    constructor(storageKey) {
+      this.storageKey = storageKey;
+      // Initialize the storage with an empty array if it doesn't exist
+      if (!localStorage.getItem(this.storageKey)) {
+        localStorage.setItem(this.storageKey, JSON.stringify([]));
+      }
+    }
+    createModels({ nameModule }) {
+      localStorage.setItem(this.storageKey, JSON.stringify(nameModule));
+    }
+    getModels() {
+      return JSON.parse(localStorage.getItem(this.storageKey));
+    }
+  }
+  window.ModelDB = ModelDB;
 })();
