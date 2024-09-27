@@ -56,3 +56,7 @@ export const OLLAMA_ROLES = {
   ASSISTANT: "assistant",
   SYSTEM: "system",
 };
+
+export const MODEL_LIST = {
+  LLAVA: "llava",
+};

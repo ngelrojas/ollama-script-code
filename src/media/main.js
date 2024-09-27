@@ -65,9 +65,8 @@
           imgElement.src = base64Image;
           const base64ImageRes = await convertImgToBase64(imgElement);
           const base64String = base64ImageRes.replace(/^data:image\/\w+;base64,/, "");
-          // data:image/png;base64,iVBORw0KGgo
+
           sendImg = base64String;
-          // vscode.postMessage({ command: "send", text: base64ImageRes });
         };
         reader.readAsDataURL(file);
       }

@@ -1,16 +1,10 @@
 import * as vscode from "vscode";
 import { OllamaChat } from "../services/ollamaChat";
 import { OllamaChatLlava } from "../services/ollamaChatLlava";
-// import { LocalStorage } from "node-localstorage";
-// import * as path from "path";
-
-let model: any = "";
-// const localStoragePath = path.resolve(__dirname, "../olLocalStorage");
-// const localStorage = new LocalStorage(localStoragePath);
+import { MODEL_LIST } from "../constants/ollamaConstant";
 
 export class OllamaViewProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
-  private _model = "";
 
   constructor(private context: vscode.ExtensionContext) {}
 
@@ -31,7 +25,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
         switch (message.command) {
           case "send":
             const config = vscode.workspace.getConfiguration("ollama-script-code");
-            model = config.get("model") as string;
+            let model = config.get("model") as string;
             const editor = vscode.window.activeTextEditor;
             let codeSelected = "";
             if (editor) {
@@ -48,7 +42,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
               image: userImgQuestion,
             };
             let response = "";
-            if (model === "llava") {
+            if (model === MODEL_LIST.LLAVA) {
               response = await OllamaChatLlava(userRequest, conversationHistory);
             } else {
               response = await OllamaChat(model, userRequest, conversationHistory);
@@ -94,7 +88,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
       vscode.Uri.joinPath(this.context.extensionUri, "src/media", "tailwindcss.3.2.4.min.js")
     );
 
-    const svgSend = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="fill-gray-400" d="m12.815 12.197l-7.532 1.255a.5.5 0 0 0-.386.318L2.3 20.728c-.248.64.421 1.25 1.035.942l18-9a.75.75 0 0 0 0-1.341l-18-9c-.614-.307-1.283.303-1.035.942l2.598 6.958a.5.5 0 0 0 .386.318l7.532 1.255a.2.2 0 0 1 0 .395"/></svg>`;
+    const svgSend = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="m12.815 12.197l-7.532 1.255a.5.5 0 0 0-.386.318L2.3 20.728c-.248.64.421 1.25 1.035.942l18-9a.75.75 0 0 0 0-1.341l-18-9c-.614-.307-1.283.303-1.035.942l2.598 6.958a.5.5 0 0 0 .386.318l7.532 1.255a.2.2 0 0 1 0 .395"/></svg>`;
     const svgDelete = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" d="M15 12H9"/></g></svg>`;
     const svgHistory = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M5.625 6.65q-.425 0-.712-.3t-.288-.725t.288-.712t.712-.288t.725.288t.3.712t-.3.725t-.725.3m4.05-2.325q-.425 0-.725-.3t-.3-.725t.3-.713t.725-.287t.713.288t.287.712t-.288.725t-.712.3m4.65 0q-.425 0-.712-.3t-.288-.725t.288-.712t.712-.288t.725.288t.3.712t-.3.725t-.725.3m4.05 2.325q-.425 0-.725-.3t-.3-.725t.3-.725t.725-.3t.713.3t.287.725t-.288.725t-.712.3m2.325 4.025q-.425 0-.725-.288t-.3-.712t.3-.712t.725-.288t.713.288t.287.712t-.287.713t-.713.287m0 4.675q-.425 0-.725-.3t-.3-.725t.3-.712t.725-.288t.713.288t.287.712t-.287.725t-.713.3m-2.325 4.025q-.425 0-.725-.288t-.3-.712t.3-.725t.725-.3t.713.3t.287.725t-.287.713t-.713.287m-4.05 2.325q-.425 0-.712-.288t-.288-.712t.288-.725t.712-.3t.725.3t.3.725t-.3.713t-.725.287m-4.65 0q-.425 0-.725-.287t-.3-.713t.3-.725t.725-.3t.713.3t.287.725t-.288.713t-.712.287m-4.05-2.35q-.425 0-.712-.288t-.288-.712t.288-.712t.712-.288t.713.288t.287.712t-.288.713t-.712.287M3.3 15.325q-.425 0-.712-.3T2.3 14.3t.288-.712t.712-.288t.725.288t.3.712t-.3.725t-.725.3m0-4.65q-.425 0-.712-.288T2.3 9.676t.288-.725t.712-.3t.725.3t.3.725t-.3.713t-.725.287m9.7.925l3 3q.275.275.275.7T16 16t-.7.275t-.7-.275l-3.3-3.3q-.15-.15-.225-.337T11 11.975V8q0-.425.288-.712T12 7t.713.288T13 8z"/></svg>`;
     const svgClose = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 20 20"><path fill="currentColor" d="M10 8.586L2.929 1.515L1.515 2.929L8.586 10l-7.071 7.071l1.414 1.414L10 11.414l7.071 7.071l1.414-1.414L11.414 10l7.071-7.071l-1.414-1.414z"/></svg>`;
@@ -130,20 +124,20 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
               </div>
               
               <div class="bg-slate-400 absolute bottom-0 w-full flex flex-col my-0.5" id="chatForm">
-                <textarea class="p-2 text-black w-full rounded-l-sm text-dynamic" id="send-req-ollama-bot" placeholder="Type your message here" cols="30"></textarea>
-                <div class="grid">
+                <textarea class="bg-zinc-800 p-2 text-black w-full rounded-l-sm text-dynamic" id="send-req-ollama-bot" placeholder="Type your message here" cols="30"></textarea>
+                <div class="grid bg-zinc-800 border-chat">
                   <div class="relative preview-w">
-                    <img id="image-preview" class="mx-1 my-1 rounded  preview-o-img hidden" />  
-                    <button class="absolute top-0 right-16 bg-red-500 text-white rounded-full w-4 h-4 flex justify-center items-center" onClick="removeImage()">${svgRemove}</button>
+                    <img id="image-preview" class="mx-8 my-1 rounded  preview-o-img hidden" />  
+                    <button class="absolute top-0 right-10 bg-red-500 text-white rounded-full w-4 h-4 flex justify-center items-center" onClick="removeImage()">${svgRemove}</button>
                   </div>
-                  <div class="relative preview-w col-start-1">
+                  <div class="relative preview-w col-start-1" id="btn-plus">
                     <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="send-req-ollama-bot-img" accept="image/*" onChange="previewImage(event)" />
-                    <div class="p-2 bg-slate-400 flex justify-center items-center rounded-r-sm cursor-pointer">
+                    <div class="bg-zinc-800 p-2 bg-slate-400 flex justify-center items-center rounded-r-sm cursor-pointer">
                       <span class="text-white text-xl font-bold">${svgPlus}</span>
                     </div>
                   </div>
 
-                  <button class="col-end-7 p-1 bg-slate-400 w-1/7 flex justify-center items-center rounded-r-sm" id="send">
+                  <button class="bg-zinc-800 col-end-7 p-1 bg-slate-400 w-1/7 flex justify-center items-center rounded-r-sm" id="send">
                       ${svgSend}
                   </button>
                 </div>
