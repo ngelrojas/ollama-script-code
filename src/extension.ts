@@ -124,8 +124,9 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(externalAutocompleteCommand);
 }
 
-async function retrieveModelList(inputModels: string) {
+async function retrieveModelList() {
   try {
+    let inputModels = "";
     const response = await ListModels();
 
     if (response.models.length === 0) {
@@ -169,8 +170,7 @@ async function getWebviewContent(webview: vscode.Webview, context: vscode.Extens
     vscode.Uri.joinPath(context.extensionUri, "src/media", "ollamaSettings.js")
   );
 
-  let inputModels = "";
-  let ListInputModels = await retrieveModelList(inputModels);
+  let ListInputModels = await retrieveModelList();
 
   return `<!DOCTYPE html>
   <html lang="en">

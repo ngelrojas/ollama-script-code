@@ -1,5 +1,5 @@
 import ollama from "ollama";
-import { apiTemperature, numPredict } from "../autocomplete/config";
+import { MODEL_LIST } from "../constants/ollamaConstant";
 
 interface ILlava {
   question: string;
@@ -9,7 +9,7 @@ interface ILlava {
 export async function apiLLava({ question, image }: ILlava): Promise<any> {
   const url = "http://localhost:11434/api/generate";
   const data = {
-    model: "llava",
+    model: MODEL_LIST.LlAVA,
     prompt: question,
     stream: false,
     images: [image],
@@ -29,7 +29,7 @@ export async function apiLLava({ question, image }: ILlava): Promise<any> {
     }
 
     const result = await response.json();
-    console.log("LLAVA RESPONSE = ", result);
+
     return result;
   } catch (error) {
     console.error("Error:", error);
@@ -39,7 +39,7 @@ export async function apiLLava({ question, image }: ILlava): Promise<any> {
 
 export const apiGenLLava = async ({ question, image }: ILlava) => {
   const response = await ollama.generate({
-    model: "llava",
+    model: MODEL_LIST.LlAVA,
     prompt: `${question}`,
     stream: false,
     images: [image],

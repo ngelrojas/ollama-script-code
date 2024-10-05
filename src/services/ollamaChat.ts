@@ -1,15 +1,26 @@
 import ollama from "ollama";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuIdv4 } from "uuid";
 import { OLLAMA_ROLES } from "../constants/ollamaConstant";
 import { apiTemperature } from "../autocomplete/config";
 
 let { numPredict } = require("../autocomplete/config");
 numPredict = parseInt(numPredict);
 
-interface userRequest {
-  question: string;
+interface questionRequest {
+  txt: string;
+}
+interface imageRequest {
+  img: string;
+}
+
+interface codeRequest {
   code: string;
-  image: string;
+}
+
+interface userRequest {
+  question: questionRequest;
+  code: codeRequest;
+  image: imageRequest;
 }
 
 interface Message {
@@ -24,9 +35,13 @@ export const OllamaChat = async (
   inputMsg: userRequest,
   conversationHistory: Message[]
 ) => {
+  const contentQuestion = inputMsg.code.code
+    ? `${inputMsg.question.txt} ${inputMsg.code.code}`
+    : inputMsg.question.txt;
+
   conversationHistory.push({
     role: OLLAMA_ROLES.USER,
-    content: `${inputMsg.question} ${inputMsg.code}`,
+    content: contentQuestion,
   });
 
   let response = await ollama.chat({
@@ -62,7 +77,7 @@ export const OllamaChat = async (
   let splitContent = response.message.content.split(/<\/?pre>/);
 
   for (let i = 0; i < splitContent.length; i++) {
-    counter = uuidv4();
+    counter = uuIdv4();
     if (i % 2 === 0) {
       splitContent[i] = "<p>" + escapeHtml(splitContent[i]) + "</p>";
     } else {

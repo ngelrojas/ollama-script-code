@@ -58,5 +58,5 @@ export const OLLAMA_ROLES = {
 };
 
 export const MODEL_LIST = {
-  LLAVA: "llava",
+  LlAVA: "llava",
 };

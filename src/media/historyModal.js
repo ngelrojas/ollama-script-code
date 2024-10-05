@@ -68,9 +68,9 @@
           //TODO: the problem with the code below is the getHistory.chat is display all the chat history
           //TODO: should display just the conversation of the selected history.
           document.getElementById("wrap-ollama-section").innerHTML = getHistory.chat;
-          console.log(getHistory.chat);
-          console.log(getHistory.counter);
-          console.log(getHistory.uuid);
+          // console.log(getHistory.chat);
+          // console.log(getHistory.counter);
+          // console.log(getHistory.uuid);
         });
       });
     });
