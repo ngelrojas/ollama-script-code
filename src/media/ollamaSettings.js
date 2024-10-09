@@ -10,7 +10,7 @@
 
       radios.forEach((radio) => {
         if (radio.checked) {
-          selectedModels = radio.parentElement.textContent.trim();
+          selectedModels = radio.id;
         }
       });
 

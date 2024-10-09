@@ -123,6 +123,10 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(completionProvider);
   context.subscriptions.push(externalAutocompleteCommand);
 }
+function convertMBtoGB(sizeInKB: number): string {
+  const size = sizeInKB / (1024 * 1024 * 1024);
+  return size.toFixed(1);
+}
 
 async function retrieveModelList() {
   try {
@@ -142,10 +146,11 @@ async function retrieveModelList() {
 
     response.models.forEach((model: any) => {
       let modelName = model.model.split(":")[0];
+      let modelSize = convertMBtoGB(model.size);
       if (modelStored === modelName) {
-        inputModels += `<label id="model-name" class="label-model-input" for=${modelName}><input type="radio" id=${modelName} name="model" checked> ${modelName}</label>`;
+        inputModels += `<div class="flex w-80"><label id="model-name" class="label-model-input flex-1 p-2 border uppercase" for=${modelName}>${modelName}<p class="text-xs text-slate-400">${modelSize} GB</p></label> <label class="flex justify-end flex-1 py-8 border" for=${modelName}><input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="radio" id=${modelName} name="model" checked></label></div>`;
       } else {
-        inputModels += `<label id="model-name" class="label-model-input" for=${modelName}><input type="radio" id=${modelName} name="model" /> ${modelName}</label>`;
+        inputModels += `<div class="flex w-80"><label id="model-name" class="label-model-input flex-1 p-2 border uppercase" for=${modelName}>${modelName}<p class="text-xs text-slate-400">${modelSize} GB</p></label> <label class="flex justify-end flex-1 py-8 border" for=${modelName}> <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="radio" id=${modelName} name="model" /></label></div>`;
       }
     });
 
@@ -188,20 +193,20 @@ async function getWebviewContent(webview: vscode.Webview, context: vscode.Extens
         <div class="relative mx-auto min-h-screen max-w-3xl text-gray-300">
           <div class="flex p-4 gap-x-4">
             <div class="flex w-1/3 flex-col gap-y-2 border p-2">
-              <div data-tab-id="models" class="tab bg-gray-600 px-2 leading-loose hover:cursor-pointer hover:bg-gray-500 active">${
-                OLLAMA_SETTING.MENU.MODEL
-              }</div>
-              <div data-tab-id="parameters" class="tab bg-gray-600 px-2 leading-loose hover:cursor-pointer hover:bg-gray-500">${
-                OLLAMA_SETTING.MENU.PARAMETERS
-              }</div>
+              <div data-tab-id="models" class="tab bg-gray-600 px-2 leading-loose hover:cursor-pointer hover:bg-gray-500 active">
+                ${OLLAMA_SETTING.MENU.MODEL}
+              </div>
+              <div data-tab-id="parameters" class="tab bg-gray-600 px-2 leading-loose hover:cursor-pointer hover:bg-gray-500">
+                ${OLLAMA_SETTING.MENU.PARAMETERS}
+              </div>
             </div>
     
     <div class="flex-grow border p-2 pl-10 text-sm">
       <div class="tabContent flex flex-col gap-y-4" id="models">
         <div class="flex">
           <form class="form-save-model" id="settingsForm">
-              <section class="section-list-models-">
-                ${ListInputModels}
+              <section class="section-list-models- flex flex-col gap-y-2">
+                  ${ListInputModels}
               </section>
               <button type="submit" class="input-save-model bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">save</button>
           </form>

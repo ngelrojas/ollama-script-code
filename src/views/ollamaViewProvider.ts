@@ -140,11 +140,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
             <div class="relative wrap-ol">
               <div class="overflow-scroll mb-28 wrapp-all-conversation-ollama" id="wrapp-all-conversation-ollama">
                   <div class="flex justify-between sticky top-0 flex bg-zinc-800 p-2 btn-options-ollama">
-                      <div id="list-models">
-                        <select id="model-select" class="bg-zinc-800 text-white text-sm rounded-md" onchange="handleSaveModel(event)">
-                          ${await retrieveModelList()}
-                        </select>
-                      </div>
+                      <div id="list-models"></div>
                       <div id="history-section">
                         <button class="history-all-chats mr-0.5" id="openModalHistory">${svgHistory}</button>
                         <button id="del-all-chats" class="del-all-chats ml-0.5">${svgDelete}</button>
