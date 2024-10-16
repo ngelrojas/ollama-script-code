@@ -10,7 +10,7 @@
 
       radios.forEach((radio) => {
         if (radio.checked) {
-          selectedModels = radio.parentElement.textContent.trim();
+          selectedModels = radio.id;
         }
       });
 
@@ -18,13 +18,10 @@
         command: "save",
         value: selectedModels,
       });
-
-      localStorage.setItem("selectedModel", selectedModels);
     });
     //tabs
     document.querySelectorAll(".tab").forEach((i) => {
       i.addEventListener("click", (e) => {
-        // console.log("HERE TABS ",i.dataset.tabId);
         document.querySelectorAll(".tab").forEach((e) => {
           e.classList.remove("active");
         });

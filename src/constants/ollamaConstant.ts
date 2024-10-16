@@ -25,8 +25,8 @@ export const OLLAMA_SETTING = {
     MODEL_LIST: "List",
   },
   MENU: {
-    MODEL: "Models",
-    PARAMETERS: "Parameters",
+    MODEL: "MODELS",
+    PARAMETERS: "PARAMETERS",
   },
   SUB_MENU: {
     NUMBER_PREDICTION: "Number Prediction",
@@ -55,4 +55,8 @@ export const OLLAMA_ROLES = {
   USER: "user",
   ASSISTANT: "assistant",
   SYSTEM: "system",
+};
+
+export const MODEL_LIST = {
+  LlAVA: "llava",
 };
