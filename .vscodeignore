@@ -3,5 +3,4 @@
 .gitginore
 vsc-extension-quickstart.md
 node_modules/
-dist/
 webpack.config.js
