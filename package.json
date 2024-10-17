@@ -3,7 +3,7 @@
   "displayName": "Ollama Script Code",
   "description": "ollama Script Code is a Visual Studio Code extension that provides autocompletion and chat for code using the Ollama models.",
   "version": "0.0.1",
-  "publisher": "Angel Rojas Pacheco",
+  "publisher": "angel rojas pacheco",
   "repository": {
     "type": "git",
     "url": "https://github.com/ngelrojas/ollama-script-code"
