@@ -1,0 +1,4 @@
+.vscode/**
+.vscode-test/**
+.gitginore
+vsc-extension-quickstart.md
