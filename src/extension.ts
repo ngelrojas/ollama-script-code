@@ -219,9 +219,9 @@ async function getWebviewContent(webview: vscode.Webview, context: vscode.Extens
                <span class="basis-1/3 whitespace-nowrap">${
                  OLLAMA_SETTING.SUB_MENU.NUMBER_PREDICTION
                }</span>
-              <label for="numPredict" class="relative inline-flex cursor-pointer items-center">
-                <input id="numPredict" type="number" value=${numPredict} min="1000" name="numPredict" class="text-black p-1 rounded ml-10" />
-              </label>
+              <label for="numPredict" class="relative inline-flex cursor-pointer items-center"></label>
+              <input id="numPredict" type="range" value=${numPredict} min="500" max="2000" name="numPredict" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+              
             </div>
             <div class="flex py-2">
                 <span class="basis-1/3 whitespace-nowrap">${OLLAMA_SETTING.SUB_MENU.WIN_SIZE}</span>
