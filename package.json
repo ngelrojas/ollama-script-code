@@ -41,7 +41,7 @@
     "commands": [
       {
         "command": "ollama-script-code.openSettings",
-        "title": "Open Settings"
+        "title": "OSC Settings"
       },
       {
         "command": "ollama-script-code.autocomplete",

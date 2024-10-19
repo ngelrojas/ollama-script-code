@@ -36,11 +36,16 @@
         document.getElementById(target).classList.remove("hidden");
       });
     });
-
+    // parametersForm display number realtime settings
+    updateDisplay("numPredict", "numPredictDisplay");
+    updateDisplay("promptWindowSize", "winSize");
+    updateDisplay("responsePreviewMaxTokens", "maxTokens");
+    updateDisplay("responsePreviewDelay", "delay");
+    updateDisplay("apiTemperature", "temperature");
     // save parametersForm
     document.getElementById("parametersForm").addEventListener("submit", (event) => {
       event.preventDefault();
-
+      console.log(`NUMBER PREDICTION = ${document.getElementById("numPredict").value}`);
       const parameters = {
         maxTokensPredicted: document.getElementById("numPredict").value,
         promptWindowSize: document.getElementById("promptWindowSize").value,
@@ -57,5 +62,10 @@
         value: parameters,
       });
     });
+    function updateDisplay(inputId, displayId) {
+      document.getElementById(inputId).addEventListener("input", (event) => {
+        document.getElementById(displayId).innerText = event.target.value;
+      });
+    }
   });
 })();
