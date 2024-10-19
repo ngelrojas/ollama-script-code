@@ -11,6 +11,8 @@ Ollama Script Code helps streamline your workflow, whether you're debugging, wri
 - 🔐 No telemetry or tracking
 - 🔬 Works with any language coding or human one.
 - 📦 Easy to install and use
+- interactive chat
+- 🧠 Intelligent autocompletion
 
 ## REQUIREMENTS
 
@@ -21,7 +23,7 @@ Ollama Script Code helps streamline your workflow, whether you're debugging, wri
 ## HOW TO USE
 
 - Install the extension from the Visual Studio Code Marketplace.
-- Open the settings using view > command palette, and search for "ollama settings".
+- Open the settings using view > command palette, and search for "OSC Settings".
 - Set the model in the tab models.
 
 ## NOTES
