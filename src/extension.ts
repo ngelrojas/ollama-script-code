@@ -153,9 +153,9 @@ async function retrieveModelList() {
       let modelName = model.model.split(":")[0];
       let modelSize = convertMBtoGB(model.size);
       if (modelStored === modelName) {
-        inputModels += `<div class="flex w-80"><label id="model-name" class="label-model-input flex-1 p-2 border uppercase" for=${modelName}>${modelName}<p class="text-xs text-slate-400">${modelSize} GB</p></label> <label class="flex justify-end flex-1 py-8 border" for=${modelName}><input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="radio" id=${modelName} name="model" checked></label></div>`;
+        inputModels += `<div class="flex rounded bg-slate-800 p-2"><label id="model-name" class="text-white label-model-input flex-1 p-2 border uppercase" for=${modelName}>${modelName}<p class="text-xs text-slate-400 mt-2">${modelSize} GB</p></label> <label class="flex justify-end flex-1 py-8 border" for=${modelName}><input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="radio" id=${modelName} name="model" checked></label></div>`;
       } else {
-        inputModels += `<div class="flex w-80"><label id="model-name" class="label-model-input flex-1 p-2 border uppercase" for=${modelName}>${modelName}<p class="text-xs text-slate-400">${modelSize} GB</p></label> <label class="flex justify-end flex-1 py-8 border" for=${modelName}> <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="radio" id=${modelName} name="model" /></label></div>`;
+        inputModels += `<div class="flex rounded bg-slate-800 p-2"><label id="model-name" class="text-white label-model-input flex-1 p-2 border uppercase" for=${modelName}>${modelName}<p class="text-xs mt-2 text-slate-400">${modelSize} GB</p></label> <label class="flex justify-end flex-1 py-8 border" for=${modelName}> <input class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="radio" id=${modelName} name="model" /></label></div>`;
       }
     });
 
@@ -198,10 +198,10 @@ async function getWebviewContent(webview: vscode.Webview, context: vscode.Extens
         <div class="relative mx-auto min-h-screen max-w-3xl text-gray-300">
           <div class="flex p-4 gap-x-4">
             <div class="flex w-1/3 flex-col gap-y-2 border p-2">
-              <div data-tab-id="models" class="tab bg-gray-600 px-2 leading-loose hover:cursor-pointer hover:bg-gray-500 active">
+              <div data-tab-id="models" class="rounded tab bg-slate-800 px-2 leading-loose hover:cursor-pointer hover:bg-gray-500 active">
                 ${OLLAMA_SETTING.MENU.MODEL}
               </div>
-              <div data-tab-id="parameters" class="tab bg-gray-600 px-2 leading-loose hover:cursor-pointer hover:bg-gray-500">
+              <div data-tab-id="parameters" class="rounded tab bg-slate-800 px-2 leading-loose hover:cursor-pointer hover:bg-gray-500">
                 ${OLLAMA_SETTING.MENU.PARAMETERS}
               </div>
             </div>
@@ -210,10 +210,14 @@ async function getWebviewContent(webview: vscode.Webview, context: vscode.Extens
       <div class="tabContent flex flex-col gap-y-4" id="models">
         <div class="flex">
           <form class="form-save-model" id="settingsForm">
-              <section class="section-list-models- flex flex-col gap-y-2">
+              <section class="section-list-models- flex flex-col gap-y-2 w-96">
                   ${ListInputModels}
               </section>
-              <button type="submit" class="input-save-model bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">save</button>
+              <button type="submit" class="mt-3 w-full relative inline-flex items-center justify-center mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+                <span class="w-full text-white relative px-5 py-2.5 transition-all ease-in duration-75 bg-blue-600 dark:bg-gray-900 rounded group-hover:bg-opacity-0">
+                  SAVE
+                </span>
+              </button>
           </form>
         </div>  
       </div>
@@ -357,7 +361,12 @@ async function getWebviewContent(webview: vscode.Webview, context: vscode.Extens
                 </div>
             </div>
             <div class="flex py-2">
-                <button type="submit" class="input-save-model bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">save</button>
+                
+                <button type="submit" class="w-full relative inline-flex items-center justify-center mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+                  <span class="w-full text-white relative px-5 py-2.5 transition-all ease-in duration-75 bg-blue-600 dark:bg-gray-900 rounded group-hover:bg-opacity-0">
+                    SAVE
+                  </span>
+                </button>
             </div>
           </form>
       </div>

@@ -47,7 +47,7 @@
       return canvas.toDataURL("image/png");
     }
 
-    let counter = 0;
+    let counter = 1;
     let sendImg;
 
     const sendButton = document.getElementById("send");
@@ -217,8 +217,9 @@
     }
 
     function sendInfoChat() {
-      counter++;
+      counter = counter + 1;
       let _requestInputValue = escapeHtml(requestInput.value);
+
       let sendImgTxt = {
         txt: requestInput.value,
         img: sendImg,
@@ -317,17 +318,21 @@
       actionBtnResend.addEventListener("click", (event) => {
         let counterValue = actionBtnResend.getAttribute("data-counter");
         let resendText = document.getElementById(`${attr2}-${counterValue}`).textContent;
-        console.log("resendText", resendText);
+
         document.getElementById(`${attr3}-${counter}`).remove();
         document.getElementById(`${attr4}-${counter}`).appendChild(loadResponseWrap);
-        vscode.postMessage({ command: "send", text: resendText });
+        let sendImgTxt = {
+          txt: resendText,
+          img: null,
+        };
+        vscode.postMessage({ command: "send", text: sendImgTxt });
       });
     }
 
     function getCurrentChat() {
       let chatSaving = document.getElementById("wrap-ollama-section").innerHTML;
       localStorage.setItem("chat", chatSaving);
-      localStorage.setItem("counter", counter.toString());
+      localStorage.setItem("counter", counter);
     }
 
     function loadingChat(counter, loadResponseWrap) {
@@ -371,7 +376,9 @@
       let chatSaved = localStorage.getItem("chat");
       counter = parseInt(localStorage.getItem("counter"));
       let uuidArray = JSON.parse(localStorage.getItem("uuidArr"));
-
+      if (isNaN(counter)) {
+        counter = 1;
+      }
       if (chatSaved !== "") {
         document.getElementById("wrap-ollama-section").innerHTML = chatSaved;
 
@@ -466,7 +473,6 @@
 
   function handleSaveModel(event) {
     const selectedModel = event.target.value;
-    console.log("here send model = ", selectedModel);
     vscode.postMessage({
       command: "save",
       text: selectedModel,
