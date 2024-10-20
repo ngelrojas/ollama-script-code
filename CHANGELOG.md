@@ -8,3 +8,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 [0.0.1]
 Initial release of Ollama Script Code
+[0.0.2]
+updating files changelogs
+[0.0.3]
+updating UI interface panel models
+[0.0.4]
+updating chat box and interface panel parameters
