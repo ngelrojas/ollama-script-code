@@ -1,16 +1,19 @@
 {
   "name": "ollama-script-code",
-  "displayName": "ollama-script-code",
-  "description": "ollama-script-code is a Visual Studio Code extension that provides autocompletion and chat for code using the Ollama models.",
-  "version": "0.0.1",
+  "displayName": "Ollama Script Code",
+  "description": "ollama Script Code is a Visual Studio Code extension that provides autocompletion and chat for code using the Ollama models.",
+  "version": "0.0.3",
+  "publisher": "OllamaScriptCode",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngelrojas/ollama-script-code"
+  },
   "engines": {
     "vscode": "^1.88.0"
   },
   "categories": [
+    "Programming Languages",
     "Machine Learning",
-    "Natural Language Processing",
-    "Productivity",
-    "programming languages",
     "Data Science",
     "Formatters",
     "Linters"
@@ -38,7 +41,7 @@
     "commands": [
       {
         "command": "ollama-script-code.openSettings",
-        "title": "Open Settings"
+        "title": "OSC Settings"
       },
       {
         "command": "ollama-script-code.autocomplete",
@@ -148,7 +151,7 @@
     "eslint": "^8.57.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",
-    "webpack": "^5.91.0",
+    "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {

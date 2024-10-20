@@ -222,3 +222,12 @@ main > .wrap-ol {
 .preview-w {
   width: 109px;
 }
+
+.border-chat {
+  border-top: 0.5px solid #ddd;
+}
+
+/* history nav */
+.bg-history-nav {
+  background-color: #1f1f1f;
+}

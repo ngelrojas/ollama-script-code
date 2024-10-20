@@ -10,7 +10,7 @@
 
       radios.forEach((radio) => {
         if (radio.checked) {
-          selectedModels = radio.parentElement.textContent.trim();
+          selectedModels = radio.id;
         }
       });
 
@@ -18,13 +18,10 @@
         command: "save",
         value: selectedModels,
       });
-
-      localStorage.setItem("selectedModel", selectedModels);
     });
     //tabs
     document.querySelectorAll(".tab").forEach((i) => {
       i.addEventListener("click", (e) => {
-        // console.log("HERE TABS ",i.dataset.tabId);
         document.querySelectorAll(".tab").forEach((e) => {
           e.classList.remove("active");
         });
@@ -39,11 +36,16 @@
         document.getElementById(target).classList.remove("hidden");
       });
     });
-
+    // parametersForm display number realtime settings
+    updateDisplay("numPredict", "numPredictDisplay");
+    updateDisplay("promptWindowSize", "winSize");
+    updateDisplay("responsePreviewMaxTokens", "maxTokens");
+    updateDisplay("responsePreviewDelay", "delay");
+    updateDisplay("apiTemperature", "temperature");
     // save parametersForm
     document.getElementById("parametersForm").addEventListener("submit", (event) => {
       event.preventDefault();
-
+      console.log(`NUMBER PREDICTION = ${document.getElementById("numPredict").value}`);
       const parameters = {
         maxTokensPredicted: document.getElementById("numPredict").value,
         promptWindowSize: document.getElementById("promptWindowSize").value,
@@ -60,5 +62,10 @@
         value: parameters,
       });
     });
+    function updateDisplay(inputId, displayId) {
+      document.getElementById(inputId).addEventListener("input", (event) => {
+        document.getElementById(displayId).innerText = event.target.value;
+      });
+    }
   });
 })();
