@@ -52,25 +52,25 @@
 
     const sendButton = document.getElementById("send");
     const requestInput = document.getElementById("send-req-ollama-bot");
-    const requestImg = document.getElementById("send-req-ollama-bot-img");
+    // const requestImg = document.getElementById("send-req-ollama-bot-img");
 
-    requestImg.addEventListener("change", (event) => {
-      const file = event.target.files[0];
+    // requestImg.addEventListener("change", (event) => {
+    //   const file = event.target.files[0];
 
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          const base64Image = e.target.result;
-          const imgElement = document.createElement("img");
-          imgElement.src = base64Image;
-          const base64ImageRes = await convertImgToBase64(imgElement);
-          const base64String = base64ImageRes.replace(/^data:image\/\w+;base64,/, "");
+    //   if (file) {
+    //     const reader = new FileReader();
+    //     reader.onload = async (e) => {
+    //       const base64Image = e.target.result;
+    //       const imgElement = document.createElement("img");
+    //       imgElement.src = base64Image;
+    //       const base64ImageRes = await convertImgToBase64(imgElement);
+    //       const base64String = base64ImageRes.replace(/^data:image\/\w+;base64,/, "");
 
-          sendImg = base64String;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+    //       sendImg = base64String;
+    //     };
+    //     reader.readAsDataURL(file);
+    //   }
+    // });
 
     if (sendButton && requestInput) {
       sendButton.addEventListener("click", sendInfoChat);
