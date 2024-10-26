@@ -153,7 +153,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
             <div class="relative wrap-ol">
               <div class="overflow-scroll mb-28 wrapp-all-conversation-ollama" id="wrapp-all-conversation-ollama">
                   <div class="flex justify-between sticky top-0 flex bg-history-nav p-2 btn-options-ollama">
-                      <div id="list-models"><p class="uppercase">model: ${
+                      <div id="list-models"><p class="uppercase text-sm">model: ${
                         this.currentModel
                       }</p></div>
                       <div id="history-section">
