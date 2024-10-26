@@ -14,3 +14,5 @@ updating files changelogs
 updating UI interface panel models
 [0.0.4]
 updating chat box and interface panel parameters
+[0.0.5]
+updating logo for marketplace vscode

@@ -20,6 +20,11 @@ interface userRequest {
   image: imageRequest;
 }
 
+function getCurrentModel() {
+  const config = vscode.workspace.getConfiguration("ollama-script-code");
+  return config.get("model") as string;
+}
+
 export class OllamaViewProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
 
@@ -41,8 +46,9 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
       async (message) => {
         switch (message.command) {
           case "send":
-            const config = vscode.workspace.getConfiguration("ollama-script-code");
-            let model = config.get("model") as string;
+            // const config = vscode.workspace.getConfiguration("ollama-script-code");
+            // let model = config.get("model") as string;
+            let model = getCurrentModel();
             const editor = vscode.window.activeTextEditor;
             let codeSelected: codeRequest = { code: "" };
             if (editor) {
@@ -125,11 +131,10 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
         
         <link href='${stylesTailwindCssUri}' rel="stylesheet" />
         <link href='${stylesMainUri}' rel="stylesheet" />
-        
         <script src='${scriptTailwindJsUri}'></script>
         <script src='${scriptMainUri}'></script>
-        <script src='${scriptToolsUri}'></script>
         <script src='${scriptHistoryModalUri}'></script>
+        <script src='${scriptToolsUri}'></script>
         <title>Ollama Script Code Chat</title>
       </head>
       <body>
@@ -138,7 +143,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
             <div class="relative wrap-ol">
               <div class="overflow-scroll mb-28 wrapp-all-conversation-ollama" id="wrapp-all-conversation-ollama">
                   <div class="flex justify-between sticky top-0 flex bg-history-nav p-2 btn-options-ollama">
-                      <div id="list-models"></div>
+                      <div id="list-models">${getCurrentModel()}</div>
                       <div id="history-section">
                         <button class="history-all-chats mr-0.5" id="openModalHistory">${svgHistory}</button>
                         <button id="del-all-chats" class="del-all-chats ml-0.5">${svgDelete}</button>
@@ -152,10 +157,10 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
                 <div class="grid bg-zinc-800 border-chat rounded-b-md">
                   <div class="relative preview-w">
                     <img id="image-preview" class="mx-8 my-1 rounded  preview-o-img hidden" />  
-                    <button class="absolute top-0 right-10 bg-red-500 text-white rounded-full w-4 h-4 flex justify-center items-center" onClick="removeImage()">${svgRemove}</button>
+                    <button class="absolute top-0 right-10 bg-red-500 text-white rounded-full w-4 h-4 flex justify-center items-center" onClick="removeFile()">${svgRemove}</button>
                   </div>
                   <div class="bg-zinc-800 relative preview-w col-start-1" id="btn-plus">
-                    <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="send-req-ollama-bot-img" accept="image/*" onChange="previewImage(event)" />
+                    <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="send-req-ollama-bot-file" accept="image/*" onChange="previewFile(event)" />
                     <div class="bg-zinc-800 p-2 flex justify-center items-center rounded-r-sm cursor-pointer">
                       <span class="text-white text-xl font-bold">${svgImg}</span>
                     </div>
