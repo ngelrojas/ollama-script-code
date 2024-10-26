@@ -152,10 +152,10 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
                 <div class="grid bg-zinc-800 border-chat rounded-b-md">
                   <div class="relative preview-w">
                     <img id="image-preview" class="mx-8 my-1 rounded  preview-o-img hidden" />  
-                    <button class="absolute top-0 right-10 bg-red-500 text-white rounded-full w-4 h-4 flex justify-center items-center" onClick="removeImage()">${svgRemove}</button>
+                    <button class="absolute top-0 right-10 bg-red-500 text-white rounded-full w-4 h-4 flex justify-center items-center" onClick="removeFile()">${svgRemove}</button>
                   </div>
                   <div class="bg-zinc-800 relative preview-w col-start-1" id="btn-plus">
-                    <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="send-req-ollama-bot-img" accept="image/*" onChange="previewImage(event)" />
+                    <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="send-req-ollama-bot-img" accept="image/*" onChange="previewFile(event)" />
                     <div class="bg-zinc-800 p-2 flex justify-center items-center rounded-r-sm cursor-pointer">
                       <span class="text-white text-xl font-bold">${svgImg}</span>
                     </div>

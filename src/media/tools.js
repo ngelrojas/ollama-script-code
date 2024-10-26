@@ -8,7 +8,7 @@ function truncateTitle(title, maxWords) {
 
 window.truncateTitle = truncateTitle;
 
-function previewImage(event) {
+function previewFile(event) {
   const input = event.target;
 
   const file = input.files[0];
@@ -26,7 +26,7 @@ function previewImage(event) {
     reader.readAsDataURL(file);
   }
 }
-window.previewImage = previewImage;
+window.previewFile = previewFile;
 
 // function previewFile(event) {
 //   const input = event.target;
