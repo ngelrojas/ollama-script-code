@@ -27,8 +27,17 @@ function getCurrentModel() {
 
 export class OllamaViewProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
+  private currentModel: string = "";
 
-  constructor(private context: vscode.ExtensionContext) {}
+  constructor(private context: vscode.ExtensionContext) {
+    this.currentModel = getCurrentModel();
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration("ollama-script-code.model")) {
+        this.currentModel = getCurrentModel();
+        // this._view?.webview.postMessage({ command: "model", text: this.currentModel });
+      }
+    });
+  }
 
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
@@ -48,7 +57,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
           case "send":
             // const config = vscode.workspace.getConfiguration("ollama-script-code");
             // let model = config.get("model") as string;
-            let model = getCurrentModel();
+            let model = this.currentModel;
             const editor = vscode.window.activeTextEditor;
             let codeSelected: codeRequest = { code: "" };
             if (editor) {
@@ -143,7 +152,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
             <div class="relative wrap-ol">
               <div class="overflow-scroll mb-28 wrapp-all-conversation-ollama" id="wrapp-all-conversation-ollama">
                   <div class="flex justify-between sticky top-0 flex bg-history-nav p-2 btn-options-ollama">
-                      <div id="list-models">${getCurrentModel()}</div>
+                      <div id="list-models">MODEL: ${getCurrentModel()}</div>
                       <div id="history-section">
                         <button class="history-all-chats mr-0.5" id="openModalHistory">${svgHistory}</button>
                         <button id="del-all-chats" class="del-all-chats ml-0.5">${svgDelete}</button>
