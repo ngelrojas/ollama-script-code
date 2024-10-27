@@ -27,8 +27,17 @@ function getCurrentModel() {
 
 export class OllamaViewProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
+  private currentModel: string = "";
 
-  constructor(private context: vscode.ExtensionContext) {}
+  constructor(private context: vscode.ExtensionContext) {
+    this.currentModel = getCurrentModel();
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration("ollama-script-code.model")) {
+        this.currentModel = getCurrentModel();
+        this.updateWebviewContent();
+      }
+    });
+  }
 
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
@@ -46,9 +55,7 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
       async (message) => {
         switch (message.command) {
           case "send":
-            // const config = vscode.workspace.getConfiguration("ollama-script-code");
-            // let model = config.get("model") as string;
-            let model = getCurrentModel();
+            let model = this.currentModel;
             const editor = vscode.window.activeTextEditor;
             let codeSelected: codeRequest = { code: "" };
             if (editor) {
@@ -89,10 +96,13 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
       undefined,
       this.context.subscriptions
     );
+    this.updateWebviewContent();
+  }
 
-    (async () => {
-      webviewView.webview.html = await this._getHtmlForWebview(webviewView.webview);
-    })();
+  private async updateWebviewContent() {
+    if (this._view) {
+      this._view.webview.html = await this._getHtmlForWebview(this._view.webview);
+    }
   }
 
   public async _getHtmlForWebview(webview: vscode.Webview) {
@@ -143,7 +153,9 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
             <div class="relative wrap-ol">
               <div class="overflow-scroll mb-28 wrapp-all-conversation-ollama" id="wrapp-all-conversation-ollama">
                   <div class="flex justify-between sticky top-0 flex bg-history-nav p-2 btn-options-ollama">
-                      <div id="list-models">${getCurrentModel()}</div>
+                      <div id="list-models"><p class="uppercase text-sm">model: ${
+                        this.currentModel
+                      }</p></div>
                       <div id="history-section">
                         <button class="history-all-chats mr-0.5" id="openModalHistory">${svgHistory}</button>
                         <button id="del-all-chats" class="del-all-chats ml-0.5">${svgDelete}</button>
@@ -155,11 +167,15 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
               <div class="p-4 absolute bottom-0 w-full flex flex-col my-0.5" id="chatForm">
                 <textarea class="bg-zinc-800 pt-1 pb-3 px-2 text-white w-full rounded-t-md text-dynamic" id="send-req-ollama-bot" placeholder="Type your message here" cols="30"></textarea>
                 <div class="grid bg-zinc-800 border-chat rounded-b-md">
-                  <div class="relative preview-w">
+                  <div class="relative preview-w ${
+                    this.currentModel === MODEL_LIST.LlAVA ? "block" : "hidden"
+                  }">
                     <img id="image-preview" class="mx-8 my-1 rounded  preview-o-img hidden" />  
                     <button class="absolute top-0 right-10 bg-red-500 text-white rounded-full w-4 h-4 flex justify-center items-center" onClick="removeFile()">${svgRemove}</button>
                   </div>
-                  <div class="bg-zinc-800 relative preview-w col-start-1" id="btn-plus">
+                  <div class="bg-zinc-800 relative preview-w col-start-1 ${
+                    this.currentModel === MODEL_LIST.LlAVA ? "block" : "hidden"
+                  }" id="btn-plus">
                     <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="send-req-ollama-bot-file" accept="image/*" onChange="previewFile(event)" />
                     <div class="bg-zinc-800 p-2 flex justify-center items-center rounded-r-sm cursor-pointer">
                       <span class="text-white text-xl font-bold">${svgImg}</span>
