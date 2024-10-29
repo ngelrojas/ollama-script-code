@@ -4,3 +4,4 @@ node_modules/
 .idea/
 src/.DS_Store
 *.vsix
+notes.txt
