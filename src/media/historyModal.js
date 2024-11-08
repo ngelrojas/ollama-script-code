@@ -28,16 +28,10 @@
         btnDel.innerHTML = svgDelete;
         const titleCell = document.createElement("div");
 
-        // dataCell.addEventListener("click", function () {
-        //   const idHistory = this.getAttribute("id-history");
-        //   getHistory = olDB.read(parseInt(idHistory));
-        // });
-
         btnDel.addEventListener("click", function () {
           const idDelHistory = this.getAttribute("btn-del-history");
           olDB.delete(idDelHistory);
           const delRow = document.getElementById("id-tr-" + idDelHistory);
-          console.log(delRow);
           if (delRow) {
             delRow.remove();
           }
@@ -68,9 +62,6 @@
           //TODO: the problem with the code below is the getHistory.chat is display all the chat history
           //TODO: should display just the conversation of the selected history.
           document.getElementById("wrap-ollama-section").innerHTML = getHistory.chat;
-          // console.log(getHistory.chat);
-          // console.log(getHistory.counter);
-          // console.log(getHistory.uuid);
         });
       });
     });

@@ -1,22 +1,27 @@
 import ollama from "ollama";
-import { MODEL_LIST } from "../constants/ollamaConstant";
+import { MODEL_LIST, OLLAMA_URL_CHAT } from "../constants/ollamaConstant";
 
-interface ILlava {
-  question: string;
-  image: any;
+interface RequestMessage {
+  role: string;
+  content: string;
+  images: string[];
 }
 
-export async function apiLLava({ question, image }: ILlava): Promise<any> {
-  const url = "http://localhost:11434/api/generate";
+export async function apiLLava({ role, content, images }: RequestMessage): Promise<any> {
   const data = {
     model: MODEL_LIST.LlAVA,
-    prompt: question,
     stream: false,
-    images: [image],
+    messages: [
+      {
+        role,
+        content,
+        images,
+      },
+    ],
   };
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(OLLAMA_URL_CHAT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,11 +29,19 @@ export async function apiLLava({ question, image }: ILlava): Promise<any> {
       body: JSON.stringify(data),
     });
 
+    const responseText = await response.text();
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const result = await response.json();
+    let result;
+
+    try {
+      result = JSON.parse(responseText);
+    } catch (error) {
+      throw new Error(`iva-model FAILED TO PARSE JSON: ${error}`);
+    }
 
     return result;
   } catch (error) {
@@ -36,13 +49,3 @@ export async function apiLLava({ question, image }: ILlava): Promise<any> {
     throw error;
   }
 }
-
-export const apiGenLLava = async ({ question, image }: ILlava) => {
-  const response = await ollama.generate({
-    model: MODEL_LIST.LlAVA,
-    prompt: `${question}`,
-    stream: false,
-    images: [image],
-  });
-  return response;
-};
