@@ -19,7 +19,6 @@
 
     function convertImgToBase64(imgElement) {
       return new Promise((resolve, reject) => {
-        // Ensure the image is fully loaded
         if (!imgElement.complete) {
           imgElement.onload = () => {
             resolve(drawImageToCanvas(imgElement));
@@ -32,18 +31,14 @@
     }
 
     function drawImageToCanvas(imgElement) {
-      // Create a canvas element
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
 
-      // Set canvas dimensions to match the image
       canvas.width = imgElement.width;
       canvas.height = imgElement.height;
 
-      // Draw the image onto the canvas
       ctx.drawImage(imgElement, 0, 0);
 
-      // Get the Base64 string
       return canvas.toDataURL("image/png");
     }
 
@@ -173,6 +168,7 @@
         chat: chatSaving,
         counter: counter,
         uuidArr: _codeCounterGenerated,
+        image: sendImg,
       });
     }
 
@@ -225,6 +221,7 @@
         txt: requestInput.value,
         img: sendImg,
       };
+
       vscode.postMessage({ command: "send", text: sendImgTxt });
 
       const loadResponseWrap = document.createElement("div");
@@ -333,6 +330,7 @@
       let chatSaving = document.getElementById("wrap-ollama-section").innerHTML;
       localStorage.setItem("chat", chatSaving);
       localStorage.setItem("counter", counter);
+      localStorage.setItem("image", sendImg);
     }
 
     function loadingChat(counter, loadResponseWrap) {
@@ -372,15 +370,23 @@
     window.addEventListener("unload", getCurrentChat);
 
     window.addEventListener("load", (event) => {
-      // Load the chat from the local storage called olDB
       let chatSaved = localStorage.getItem("chat");
       counter = parseInt(localStorage.getItem("counter"));
       let uuidArray = JSON.parse(localStorage.getItem("uuidArr"));
+      let _image = localStorage.getItem("image");
+
       if (isNaN(counter)) {
         counter = 1;
       }
+
       if (chatSaved !== "") {
         document.getElementById("wrap-ollama-section").innerHTML = chatSaved;
+
+        if (_image !== "undefined" && _image !== null && _image !== "") {
+          console.log(`IMAGE = ${_image}`);
+          document.getElementById("image-preview").src = `data:image/png;base64,${_image}`;
+          sendImg = _image;
+        }
 
         const loadResponseWrap = document.createElement("div");
         loadResponseWrap.id = `loading-${counter}`;
@@ -407,28 +413,25 @@
   class OllamaDB {
     constructor(storageKey) {
       this.storageKey = storageKey;
-      // Initialize the storage with an empty array if it doesn't exist
+
       if (!localStorage.getItem(this.storageKey)) {
         localStorage.setItem(this.storageKey, JSON.stringify([]));
       }
     }
 
-    // Create a new item
-    create({ title, dateTime, chat, counter, uuidArr }) {
+    create({ title, dateTime, chat, counter, uuidArr, image }) {
       const items = JSON.parse(localStorage.getItem(this.storageKey)) || [];
       const id = items.length > 0 ? Math.max(...items.map((item) => item.id)) + 1 : 1;
-      const item = { id, title, dateTime, chat, counter, uuid: uuidArr };
+      const item = { id, title, dateTime, chat, counter, uuid: uuidArr, image };
       items.push(item);
       localStorage.setItem(this.storageKey, JSON.stringify(items));
     }
 
-    // Read an item by id
     read(id) {
       const items = JSON.parse(localStorage.getItem(this.storageKey));
       return items.find((item) => item.id === parseInt(id));
     }
 
-    // Update an item by uuid
     update(uuid, updatedFields) {
       const items = JSON.parse(localStorage.getItem(this.storageKey));
       const itemIndex = items.findIndex((item) => item.uuid === uuid);
@@ -438,7 +441,6 @@
       }
     }
 
-    // Delete an item by uuid
     delete(id) {
       const items = JSON.parse(localStorage.getItem(this.storageKey));
       if (Array.isArray(items)) {
@@ -447,7 +449,6 @@
       }
     }
 
-    // List all items
     list() {
       return JSON.parse(localStorage.getItem(this.storageKey));
     }
@@ -457,7 +458,7 @@
   class ModelDB {
     constructor(storageKey) {
       this.storageKey = storageKey;
-      // Initialize the storage with an empty array if it doesn't exist
+
       if (!localStorage.getItem(this.storageKey)) {
         localStorage.setItem(this.storageKey, JSON.stringify([]));
       }
@@ -477,11 +478,6 @@
       command: "save",
       text: selectedModel,
     });
-    // const config = vscode.workspace?.getConfiguration("ollama-script-code");
-    // console.log("CONFIG", config);
-    // config?.update("model", selectedModel, vscode.ConfigurationTarget.Global).then(() => {
-    //   vscode.window.showInformationMessage(`Model ${selectedModel} SAVED`);
-    // });
   }
 
   window.handleSaveModel = handleSaveModel;

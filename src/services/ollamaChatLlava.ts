@@ -37,10 +37,9 @@ export const OllamaChatLLava = async (inputMsg: any, clearHistory: boolean = fal
 
   try {
     const comeResponse = await apiLLava(historyConversation);
-
     response = comeResponse;
   } catch (e: any) {
-    console.log("ERROR IN SERVICE LlAVA", e.message);
+    throw new Error(`error ollama-chat-LLava: ${e.message}`);
   }
 
   function escapeHtml(unsafe: string) {

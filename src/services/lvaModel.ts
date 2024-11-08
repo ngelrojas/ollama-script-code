@@ -40,8 +40,7 @@ export async function apiLLava({ role, content, images }: RequestMessage): Promi
     try {
       result = JSON.parse(responseText);
     } catch (error) {
-      console.error("ERROR PARSING JSON:", error);
-      throw new Error("FAILED TO PARSE JSON");
+      throw new Error(`iva-model FAILED TO PARSE JSON: ${error}`);
     }
 
     return result;
