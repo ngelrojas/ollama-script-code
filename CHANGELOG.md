@@ -29,3 +29,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 [0.0.6]
 
 - adding new model LLava
+
+[0.0.7]
+
+- adding new logo vscode side bar
