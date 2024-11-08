@@ -1,4 +1,5 @@
 export const OLLAMA_LOCALHOST = "http://localhost:11434";
+export const OLLAMA_URL_CHAT = "http://localhost:11434/api/chat";
 export const OLLAMA_RESPONSE_DATA = "Ollama is running";
 export const OLLAMA_ON = {
   DATA: "data",

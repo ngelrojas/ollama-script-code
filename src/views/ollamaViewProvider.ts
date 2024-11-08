@@ -67,7 +67,6 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
             }
 
             const userQuestion = message.text;
-            let conversationHistory: any = [];
             const userImgQuestion = message.text.img;
             const userRequest: userRequest = {
               question: userQuestion,
@@ -77,9 +76,9 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
 
             let response = "";
             if (model === MODEL_LIST.LlAVA) {
-              response = await OllamaChatLLava(userRequest, conversationHistory);
+              response = await OllamaChatLLava(userRequest, false);
             } else {
-              response = await OllamaChat(model, userRequest, conversationHistory);
+              response = await OllamaChat(model, userRequest, false);
             }
 
             webviewView.webview.postMessage({ command: "response", text: response });
@@ -91,6 +90,11 @@ export class OllamaViewProvider implements vscode.WebviewViewProvider {
               });
             });
             return;
+          case "clearChat":
+            let _model = this.currentModel;
+            let _response: any;
+            OllamaChat(_model, _response, true);
+            OllamaChatLLava(_response, true);
         }
       },
       undefined,
