@@ -33,3 +33,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 [0.0.7]
 
 - adding new logo vscode side bar
+
+[0.0.8]
+
+- fixing a bug related with the model conversation, now the model is following the conversation correctly
